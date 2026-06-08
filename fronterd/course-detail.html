@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Khóa Học - DevAcademy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/global.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-container">
+            <div class="brand-logo" onclick="window.location.href='index.html'">
+                <div class="logo-icon">IT</div>
+                <h1 class="brand-name">DevAcademy</h1>
+            </div>
+            <nav class="user-navigation">
+                <div class="user-profile">
+                    <div id="user-avatar" class="user-avatar">U</div>
+                    <div class="user-info-text"><div id="user-name" class="user-name">Học viên</div></div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="detail-layout">
+            
+            <section class="course-main-info">
+                <h2 id="detail-title" class="detail-title">Đang tải tên khóa học...</h2>
+                <p id="detail-desc" class="detail-description">Đang tải mô tả thông tin khóa học...</p>
+                
+                <div class="curriculum-container">
+                    <h3 class="section-title">Chương trình học (Đề cương)</h3>
+                    <div id="lesson-preview-list" class="lesson-preview-list">
+                        </div>
+                </div>
+            </section>
+
+            <aside class="course-sidebar">
+                <div class="purchase-card">
+                    <div class="preview-thumbnail-wrapper">
+                        <img id="detail-thumbnail" class="preview-thumbnail" src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500" alt="Course Preview">
+                    </div>
+                    <div class="purchase-info">
+                        <div id="detail-price" class="purchase-price">0 đ</div>
+                        <button id="btn-action" class="btn-purchase-action">Đăng ký học ngay</button>
+                        <div class="purchase-badges-list">
+                            <span class="badge-item">Thời gian truy cập: Trọn đời</span>
+                            <span class="badge-item">Cấp chứng nhận hoàn thành</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/detail.js"></script>
+</body>
+</html>
