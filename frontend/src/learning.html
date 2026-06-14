@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Không Gian Học Tập - Nhóm 15</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/global.css">
+</head>
+<body class="workspace-body">
+
+    <header class="main-header workspace-header">
+        <div class="header-container">
+            <div class="brand-logo" onclick="window.location.href='index.html'">
+                <div class="logo-icon">IT</div>
+                <h1 class="brand-name font-medium text-sm">Học tập / <span id="workspace-course-title" class="text-muted">Khóa học</span></h1>
+            </div>
+            <a href="index.html" class="button">Quay lại trang chủ</a>
+        </div>
+    </header>
+
+    <div class="workspace-layout">
+        
+        <main class="workspace-main-content">
+            <div class="video-container">
+                <video id="main-video-player" class="main-video-player" controls autoplay src=""></video>
+            </div>
+            <div class="video-footer-info">
+                <h2 id="current-lesson-title" class="current-lesson-title">Đang tải bài giảng...</h2>
+                <p class="current-lesson-meta">Bài học nằm trong chương trình đào tạo chuẩn kỹ sư Nhóm 15.</p>
+            </div>
+        </main>
+
+        <aside class="workspace-sidebar">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title">Danh sách bài học</h3>
+                <span id="lesson-progress-count" class="progress-badge">0/0 bài</span>
+            </div>
+            <nav id="workspace-lesson-list" class="workspace-lesson-list">
+                </nav>
+        </aside>
+
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/workspace.js"></script>
+</body>
+</html>

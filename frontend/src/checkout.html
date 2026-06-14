@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán Đơn Hàng - Nhóm 15</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/global.css">
+</head>
+
+<body>
+
+    <header class="main-header">
+        <div class="header-container">
+            <div class="brand-logo" onclick="window.location.href='index.html'">
+                <div class="logo-icon">IT</div>
+                <h1 class="brand-name">Nhóm 15</h1>
+                <a href="index.html" class="button">Trang chủ</a>
+                <a href="course-detail.html" class="button">Khóa học</a>
+                <a href="learning.html" class="button">Học tập</a>
+                <a href="checkout.html" class="button">Thanh toán</a>
+            </div>
+        </div>
+    </header>
+    <main class="main-content">
+        <div class="checkout-layout">
+            <div class="checkout-card order-summary-section">
+                <h2 class="checkout-card-title">Thông tin đơn hàng</h2>
+                <div class="order-item-detail">
+                    <img id="checkout-thumbnail" class="order-item-thumb"
+                        src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=200" alt="Course Thumbnail">
+                    <div class="order-item-info">
+                        <h3 id="checkout-title" class="order-item-title">Tên khóa học IT</h3>
+                        <p class="order-item-author">Chuyên gia: Nhóm 15 Team</p>
+                    </div>
+                </div>
+                <div class="price-breakdown">
+                    <div class="price-row"><span>Tạm tính:</span><span id="subtotal-price">0 đ</span></div>
+                    <div class="price-row border-top font-bold text-lg"><span>Tổng thanh toán:</span><span
+                            id="total-price" class="text-blue">0 đ</span></div>
+                </div>
+            </div>
+            <div class="checkout-card payment-method-section">
+                <h2 class="checkout-card-title">Phương thức thanh toán</h2>
+                <p class="payment-subtitle">Quét mã QR qua ứng dụng Ngân hàng (VietQR) hoặc ví điện tử MoMo để hoàn tất.
+                </p>
+                <div class="qr-payment-container">
+                    <div class="qr-mockup-wrapper">
+                        <div class="qr-image-placeholder">
+                            <div class="qr-scanner-line"></div>
+                            <span class="qr-text-logo">MOCKUP QR</span>
+                        </div>
+                    </div>
+                    <div class="payment-instructions">
+                        <p><strong>Chủ tài khoản:</strong> CÔNG TY Nhóm 15</p>
+                        <p><strong>Số tài khoản:</strong> 1903xxxxxxxxx</p>
+                        <p><strong>Ngân hàng:</strong> Techcombank</p>
+                        <p><strong>Nội dung CK:</strong> <code id="payment-code"
+                                class="payment-code">RECODE_USER_ID_COURSE_ID</code></p>
+                    </div>
+                </div>
+                <button id="btn-confirm-payment" class="btn-confirm-payment">Tôi đã hoàn thành thanh toán</button>
+            </div>
+        </div>
+    </main>
+    <script src="js/api.js"></script>
+    <script src="js/checkout.js"></script>
+</body>
+
+</html>
