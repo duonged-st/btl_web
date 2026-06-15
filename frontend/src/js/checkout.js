@@ -1,0 +1,76 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseId = urlParams.get('id');
+
+    if (!courseId) {
+        alert('Không tìm thấy thông tin khóa học cần thanh toán!');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // Thiết lập userId giả định cho học viên
+    const userId = localStorage.getItem('userId') || 1;
+
+    const checkoutTitle = document.getElementById('checkout-title');
+    const checkoutThumbnail = document.getElementById('checkout-thumbnail');
+    const subtotalPrice = document.getElementById('subtotal-price');
+    const totalPrice = document.getElementById('total-price');
+    const paymentCode = document.getElementById('payment-code');
+    const btnConfirmPayment = document.getElementById('btn-confirm-payment');
+
+    let courseData = null;
+
+    // 1. Tải thông tin đơn hàng khóa học
+    async function loadOrderInfo() {
+        const response = await API.getCourseDetail(courseId);
+        if (response.success && response.data) {
+            courseData = response.data;
+            renderOrderInfo();
+        } else {
+            console.error('Không thể tải thông tin thanh toán khóa học:', response.error);
+            alert('Lỗi tải dữ liệu thanh toán.');
+            window.location.href = 'index.html';
+        }
+    }
+
+    // 2. Điền thông tin lên giao diện
+    function renderOrderInfo() {
+        checkoutTitle.textContent = courseData.title;
+        
+        if (courseData.thumbnail) {
+            checkoutThumbnail.src = courseData.thumbnail;
+        }
+
+        const formattedPrice = courseData.price.toLocaleString('vi-VN') + ' đ';
+        subtotalPrice.textContent = formattedPrice;
+        totalPrice.textContent = formattedPrice;
+
+        // Tạo nội dung chuyển khoản động theo định dạng RECODE_[USER_ID]_[COURSE_ID]
+        paymentCode.textContent = `RECODE_${userId}_${courseId}`;
+    }
+
+    // 3. Xác nhận đã chuyển khoản
+    async function handlePaymentConfirmation() {
+        btnConfirmPayment.disabled = true;
+        btnConfirmPayment.textContent = 'Đang kiểm tra giao dịch...';
+
+        // Gọi API enroll để chính thức ghi nhận người dùng đã đăng ký khóa học
+        const response = await API.enrollCourse(userId, courseId);
+        
+        btnConfirmPayment.disabled = false;
+        btnConfirmPayment.textContent = 'Tôi đã hoàn thành thanh toán';
+
+        if (response.success) {
+            alert('Xác nhận thanh toán thành công! Hệ thống đã ghi danh bạn vào khóa học này.');
+            window.location.href = `learning.html?id=${courseId}`;
+        } else {
+            alert('Xác thực giao dịch thất bại: ' + (response.error || 'Vui lòng kiểm tra lại.'));
+        }
+    }
+
+    // Gắn sự kiện click vào nút xác nhận
+    btnConfirmPayment.addEventListener('click', handlePaymentConfirmation);
+
+    // Khởi chạy
+    loadOrderInfo();
+});

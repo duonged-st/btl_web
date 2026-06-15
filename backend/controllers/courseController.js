@@ -1,5 +1,4 @@
 const CourseModel = require('../model/Course');
-
 const courseController = {
   // 1. Lấy danh sách tất cả khóa học (Có hỗ trợ tìm kiếm)
   // GET /api/courses?search=keyword
@@ -13,7 +12,6 @@ const courseController = {
       res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách khóa học.' });
     }
   },
-
   // 2. Lấy thông tin chi tiết một khóa học
   // GET /api/courses/:id
   getCourseDetail: async (req, res) => {
@@ -30,5 +28,4 @@ const courseController = {
     }
   }
 };
-
 module.exports = courseController;

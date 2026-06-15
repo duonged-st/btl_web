@@ -25,7 +25,7 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
     }
 }
 // 3. CÁC HÀM GIAO TIẾP NGHIỆP VỤ (API ENDPOINTS)
-const API = {
+const API = {   
     // --- CHỨC NĂNG 1: TRANG CHỦ DANH MỤC ---
     getCourses: async () => await fetchAPI('/courses'),
     // --- CHỨC NĂNG 2: CHI TIẾT KHÓA HỌC & GHI DANH ---
@@ -35,5 +35,9 @@ const API = {
         course_id: courseId
     }),
     // --- CHỨC NĂNG 3: KHÔNG GIAN HỌC TẬP ---
-    getLessons: async (courseId) => await fetchAPI(`/courses/${courseId}/lessons`, 'GET')
+    getLessons: async (courseId) => await fetchAPI(`/courses/${courseId}/lessons`, 'GET'),
+    getLessonDetail: async (lessonId) => await fetchAPI(`/lessons/${lessonId}`, 'GET'),
+    // --- CHỨC NĂNG 4: NGƯỜI DÙNG & HỒ SƠ ---
+    getUserProfile: async (userId) => await fetchAPI(`/users/${userId}`),
+    getUserEnrolledCourses: async (userId) => await fetchAPI(`/enroll/user/${userId}`)
 };

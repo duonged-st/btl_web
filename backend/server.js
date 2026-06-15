@@ -3,14 +3,11 @@ const { setupDatabase } = require('./config/db');
 const app = express();
 const port = 3000;
 app.use(express.json());
-
 const cors = require('cors');
 app.use(cors());
-
 const courseController = require('./controllers/courseController');
 const enrollController = require('./controllers/enrollController');
 const lessonController = require('./controllers/lessonController');
-
 app.get('/api/setup-db', async (req, res) => {
   await setupDatabase();
   res.json({ message: "Da chay lenh khoi tao CSDL. Vui long kiem tra MySQL." });
