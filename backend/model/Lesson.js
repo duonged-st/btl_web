@@ -1,4 +1,4 @@
-const { pool } = require('../db');
+const { pool } = require('../config/db');
 
 const LessonModel = {
   // 1. Hàm lấy danh sách bài học của một khóa học (Dùng cho giao diện Learning Workspace)

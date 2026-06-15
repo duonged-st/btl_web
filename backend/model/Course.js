@@ -1,4 +1,4 @@
-const { pool } = require('../db');
+const { pool } = require('../config/db');
 const CourseModel = {
   // 1. Hàm lấy danh sách khóa học (Dùng cho Trang chủ)
   getAllCourses: async (searchKeyword = '') => {

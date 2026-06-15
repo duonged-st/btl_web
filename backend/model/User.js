@@ -1,4 +1,4 @@
-const { pool } = require('../db'); 
+const { pool } = require('../config/db'); 
 const UserModel = {
   // 1. Hàm tạo người dùng mới (Dùng khi đăng ký tài khoản)
   createUser: async (name, email, password) => {

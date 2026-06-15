@@ -1,4 +1,4 @@
-const { pool } = require('../db');
+const { pool } = require('../config/db');
 
 const EnrollmentModel = {
   // 1. Hàm kiểm tra xem người dùng đã đăng ký khóa học này chưa
