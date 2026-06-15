@@ -1,15 +1,14 @@
 const mysql = require('mysql2/promise');
-
+require('dotenv').config();
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'it_course_db',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
 });
-
 async function setupDatabase() {
   try {
     const createUsersTable = `
@@ -20,7 +19,6 @@ async function setupDatabase() {
         password VARCHAR(255) NOT NULL
       )
     `;
-
     const createCoursesTable = `
       CREATE TABLE IF NOT EXISTS Courses (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -30,7 +28,6 @@ async function setupDatabase() {
         thumbnail VARCHAR(255)
       )
     `;
-
     const createLessonsTable = `
       CREATE TABLE IF NOT EXISTS Lessons (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -41,7 +38,6 @@ async function setupDatabase() {
         FOREIGN KEY (course_id) REFERENCES Courses(id) ON DELETE CASCADE
       )
     `;
-
     const createEnrollmentsTable = `
       CREATE TABLE IF NOT EXISTS Enrollments (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -52,14 +48,11 @@ async function setupDatabase() {
         FOREIGN KEY (course_id) REFERENCES Courses(id) ON DELETE CASCADE
       )
     `;
-
     await pool.execute(createUsersTable);
     await pool.execute(createCoursesTable);
     await pool.execute(createLessonsTable);
     await pool.execute(createEnrollmentsTable);
-
     console.log("Khoi tao cac bang thanh cong.");
-
   } catch (error) {
     console.error("Loi khi tao bang:", error.message);
   }
