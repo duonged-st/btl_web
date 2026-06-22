@@ -39,5 +39,16 @@ const API = {
     getLessonDetail: async (lessonId) => await fetchAPI(`/lessons/${lessonId}`, 'GET'),
     // --- CHỨC NĂNG 4: NGƯỜI DÙNG & HỒ SƠ ---
     getUserProfile: async (userId) => await fetchAPI(`/users/${userId}`),
-    getUserEnrolledCourses: async (userId) => await fetchAPI(`/enroll/user/${userId}`)
+    getUserEnrolledCourses: async (userId) => await fetchAPI(`/enroll/user/${userId}`),
+    getEnrolledCourses: async (userId) => await fetchAPI(`/enroll/user/${userId}`),
+    // --- CHỨC NĂNG 5: XÁC THỰC (AUTHENTICATION) ---
+    login: async (username, password) => await fetchAPI('/auth/login', 'POST', {
+        username: username,
+        password: password
+    }),
+    register: async (name, username, password) => await fetchAPI('/auth/register', 'POST', {
+        name: name,
+        username: username,
+        password: password
+    })
 };

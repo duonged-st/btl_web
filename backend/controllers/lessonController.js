@@ -1,6 +1,5 @@
 const LessonModel = require('../model/Lesson');
 const CourseModel = require('../model/Course');
-
 const lessonController = {
   // 1. Lấy danh sách bài học của một khóa học
   // GET /api/courses/:id/lessons
@@ -18,7 +17,6 @@ const lessonController = {
       res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách bài học.' });
     }
   },
-
   // 2. Lấy danh sách bài học của một khóa học (cho thanh sidebar danh sách)
   // GET /api/courses/:courseId/lessons
   getLessonsByCourse: async (req, res) => {
@@ -35,7 +33,6 @@ const lessonController = {
       res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách bài học.' });
     }
   },
-
   // 3. Lấy chi tiết một bài học cụ thể (để lấy video_url hiển thị lên trình phát)
   // GET /api/lessons/:id
   getLessonDetail: async (req, res) => {
@@ -52,5 +49,4 @@ const lessonController = {
     }
   }
 };
-
 module.exports = lessonController;

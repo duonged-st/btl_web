@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!courseId) {
         alert('Không tìm thấy thông tin khóa học!');
-        window.location.href = 'index.html';
         return;
     }
 

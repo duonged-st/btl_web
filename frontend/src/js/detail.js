@@ -4,12 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!courseId) {
         alert('Không tìm thấy thông tin khóa học!');
-        window.location.href = 'index.html';
         return;
     }
 
-    // Thiết lập userId giả định cho học viên (hoặc lấy từ hệ thống nếu có)
-    const userId = localStorage.getItem('userId') || 1;
+    // Lấy userId của học viên từ localStorage
+    const userId = localStorage.getItem('userId');
 
     const detailTitle = document.getElementById('detail-title');
     const detailDesc = document.getElementById('detail-desc');
@@ -80,16 +79,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. Kiểm tra trạng thái đăng ký và thiết lập hành động cho Button
     async function checkEnrollmentStatus() {
-        btnAction.disabled = true;
-        btnAction.textContent = 'Đang kiểm tra...';
-
-        const response = await API.getEnrolledCourses(userId);
-        btnAction.disabled = false;
-
         let isEnrolled = false;
-        if (response.success && response.data) {
-            // Kiểm tra xem ID khóa học này đã nằm trong danh sách đăng ký chưa
-            isEnrolled = response.data.some(course => course.id == courseId);
+
+        if (userId) {
+            btnAction.disabled = true;
+            btnAction.textContent = 'Đang kiểm tra...';
+
+            const response = await API.getEnrolledCourses(userId);
+            btnAction.disabled = false;
+
+            if (response.success && response.data) {
+                // Kiểm tra xem ID khóa học này đã nằm trong danh sách đăng ký chưa
+                isEnrolled = response.data.some(course => course.id == courseId);
+            }
         }
 
         if (isEnrolled) {
@@ -102,7 +104,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } else {
             // Trường hợp 2: Chưa đăng ký
-            if (courseData.price === 0) {
+            if (!userId) {
+                // Chưa đăng nhập -> Yêu cầu đăng nhập trước
+                btnAction.textContent = 'Đăng nhập để đăng ký học';
+                btnAction.addEventListener('click', () => {
+                    window.location.href = 'auth/login.html';
+                });
+            } else if (courseData.price === 0) {
                 // Khóa học miễn phí -> Đăng ký trực tiếp
                 btnAction.textContent = 'Đăng ký học ngay (Miễn phí)';
                 btnAction.addEventListener('click', enrollFreeCourse);
@@ -118,6 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 5. Đăng ký trực tiếp cho khóa học miễn phí
     async function enrollFreeCourse() {
+        if (!userId) {
+            window.location.href = 'auth/login.html';
+            return;
+        }
+
         btnAction.disabled = true;
         btnAction.textContent = 'Đang xử lý đăng ký...';
 

@@ -4,12 +4,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!courseId) {
         alert('Không tìm thấy thông tin khóa học cần thanh toán!');
-        window.location.href = 'index.html';
         return;
     }
 
-    // Thiết lập userId giả định cho học viên
-    const userId = localStorage.getItem('userId') || 1;
+    // Lấy userId thực tế từ localStorage của học viên
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        window.location.href = 'auth/login.html';
+        return;
+    }
 
     const checkoutTitle = document.getElementById('checkout-title');
     const checkoutThumbnail = document.getElementById('checkout-thumbnail');
@@ -29,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.error('Không thể tải thông tin thanh toán khóa học:', response.error);
             alert('Lỗi tải dữ liệu thanh toán.');
-            window.location.href = 'index.html';
         }
     }
 

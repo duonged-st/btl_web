@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký</title>
+    <link rel="stylesheet" href="../css/global.css">
+</head>
+<body>
+
+    <div class="auth-wrapper">
+        <div class="auth-card" style="max-width: 440px;">
+            
+            <div class="auth-header">
+                <h1 class="auth-brand-name">Nhóm 15</h1>
+                <p class="auth-subtitle">Web học tập</p>
+            </div>
+
+            <h2 class="auth-title">Tạo Tài Khoản</h2>
+            
+            <form id="register-form" class="auth-form">
+                
+                <div class="input-group">
+                    <label for="name" class="input-label">Họ và tên</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        class="form-input" 
+                        placeholder="Nguyễn Văn A"
+                        required
+                    />
+                </div>
+
+                <div class="input-group">
+                    <label for="username" class="input-label">Tên đăng nhập</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        class="form-input" 
+                        placeholder="Nhập tên đăng nhập"
+                        required
+                    />
+                </div>
+
+                <div class="input-group">
+                    <label for="password" class="input-label">Mật khẩu</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-input" 
+                        placeholder="Tối thiểu 6 ký tự"
+                        minlength="6"
+                        required
+                    />
+                </div>
+
+                <div class="input-group">
+                    <label for="confirm-password" class="input-label">Xác nhận mật khẩu</label>
+                    <input 
+                        type="password" 
+                        id="confirm-password" 
+                        class="form-input" 
+                        placeholder="Nhập lại mật khẩu"
+                        required
+                    />
+                </div>
+
+                <button type="submit" class="btn-primary-full" style="padding: 0.85rem;">Đăng Ký Ngay</button>
+                
+            </form>
+
+            <div class="auth-footer">
+                <p>Đã có tài khoản? <a href="login.html" class="auth-link">Đăng nhập tại đây</a></p>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/register.js"></script>
+</body>
+</html>

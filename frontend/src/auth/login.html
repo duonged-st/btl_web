@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập</title>
+    <link rel="stylesheet" href="../css/global.css">
+</head>
+<body>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            
+            <div class="auth-header">
+                <h1 class="auth-brand-name">Nhóm 15</h1>
+                <p class="auth-subtitle">Web học tập</p>
+            </div>
+
+            <h2 class="auth-title">Đăng Nhập</h2>
+            
+            <form id="login-form" class="auth-form">
+                
+                <div class="input-group">
+                    <label for="username" class="input-label">Tên đăng nhập</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        class="form-input" 
+                        placeholder="Nhập tên đăng nhập"
+                        required
+                    />
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label-wrapper">
+                        <label for="password" class="input-label">Mật khẩu</label>
+                    </div>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-input" 
+                        placeholder="••••••••"
+                        required
+                    />
+                </div>
+
+                <button type="submit" class="btn-primary-full">Đăng Nhập</button>
+                
+            </form>
+
+            <div class="auth-footer">
+                <p>Chưa có tài khoản? <a href="register.html" class="auth-link">Đăng ký ngay</a></p>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/login.js"></script>
+</body>
+</html>
