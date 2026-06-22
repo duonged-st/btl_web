@@ -1,12 +1,16 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const courseId = urlParams.get('id');
+    let courseId = urlParams.get('id');
 
     if (!courseId) {
-        alert('Không tìm thấy thông tin khóa học!');
+        const coursesRes = await API.getCourses();
+        if (coursesRes.success && coursesRes.data && coursesRes.data.length > 0) {
+            UIUtils.showCourseSelectionModal(coursesRes.data, 'course-detail.html', 'Vui lòng chọn khóa học để xem chi tiết');
+        } else {
+            alert('Không tìm thấy thông tin khóa học!');
+        }
         return;
     }
-
     // Lấy userId của học viên từ localStorage
     const userId = localStorage.getItem('userId');
 

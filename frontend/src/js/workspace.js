@@ -1,15 +1,22 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const courseIdParam = urlParams.get('id');
-    const courseId = Number(courseIdParam);
-
-    if (!Number.isInteger(courseId) || courseId <= 0) {
-        alert('Không tìm thấy thông tin khóa học!');
-        return;
-    }
-
+    let courseIdParam = urlParams.get('id');
+    
     const storedUserId = Number(localStorage.getItem('userId'));
     const userId = Number.isInteger(storedUserId) && storedUserId > 0 ? storedUserId : 1;
+
+    let courseId = Number(courseIdParam);
+
+    if (!Number.isInteger(courseId) || courseId <= 0) {
+        const enrollResponse = await API.getEnrolledCourses(userId);
+        if (enrollResponse.success && enrollResponse.data && enrollResponse.data.length > 0) {
+            UIUtils.showCourseSelectionModal(enrollResponse.data, 'learning.html', 'Vui lòng chọn khóa học bạn muốn học');
+        } else {
+            alert('Bạn chưa đăng ký khóa học nào!');
+            window.location.href = 'index.html';
+        }
+        return;
+    }
 
     // 1. Kiểm tra quyền học (người dùng đã đăng ký khóa học chưa)
     try {

@@ -1,9 +1,14 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const courseId = urlParams.get('id');
+    let courseId = urlParams.get('id');
 
     if (!courseId) {
-        alert('Không tìm thấy thông tin khóa học cần thanh toán!');
+        const coursesRes = await API.getCourses();
+        if (coursesRes.success && coursesRes.data && coursesRes.data.length > 0) {
+            UIUtils.showCourseSelectionModal(coursesRes.data, 'checkout.html', 'Vui lòng chọn khóa học để thanh toán');
+        } else {
+            alert('Không tìm thấy thông tin khóa học cần thanh toán!');
+        }
         return;
     }
 

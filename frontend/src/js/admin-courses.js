@@ -1,12 +1,46 @@
 // js/admin-courses.js
 document.addEventListener('DOMContentLoaded', () => {
     fetchCourses();
+    loadImagesDropdown();
+    
     document.getElementById('btn-add-course').addEventListener('click', () => {
         openCourseModal('add');
     });
+    
+    document.getElementById('course-thumbnail').addEventListener('change', function() {
+        const preview = document.getElementById('course-thumbnail-preview');
+        if (this.value) {
+            preview.src = this.value;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+
     document.getElementById('course-form').addEventListener('submit', handleCourseSubmit);
     document.getElementById('lesson-form').addEventListener('submit', handleLessonSubmit);
 });
+
+async function loadImagesDropdown() {
+    try {
+        const select = document.getElementById('course-thumbnail');
+        select.innerHTML = '<option value="">-- Không chọn ảnh --</option>';
+        const response = await fetch(`${API_BASE_URL}/images`);
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.data) {
+                result.data.forEach(img => {
+                    const opt = document.createElement('option');
+                    opt.value = `images/${img}`;
+                    opt.textContent = img;
+                    select.appendChild(opt);
+                });
+            }
+        }
+    } catch (e) {
+        console.error('Lỗi tải danh sách ảnh', e);
+    }
+}
 
 // --- QUẢN LÝ KHÓA HỌC ---
 
@@ -34,9 +68,10 @@ function renderCourseTable(courses) {
     courses.forEach(course => {
         const priceText = course.price > 0 ? course.price.toLocaleString('vi-VN') + ' đ' : 'Miễn phí';
         const tr = document.createElement('tr');
+        const imgSrc = (course.thumbnail && course.thumbnail.trim() !== '') ? course.thumbnail : 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=100';
         tr.innerHTML = `
             <td>${course.id}</td>
-            <td><img src="${course.thumbnail}" alt="thumbnail" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+            <td><img src="${imgSrc}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
             <td><strong>${course.title}</strong></td>
             <td>${priceText}</td>
             <td>
@@ -63,7 +98,14 @@ async function openCourseModal(mode, courseId = null) {
             document.getElementById('course-title').value = course.title;
             document.getElementById('course-description').value = course.description;
             document.getElementById('course-price').value = course.price;
-            document.getElementById('course-thumbnail').value = course.thumbnail;
+            
+            const thumbSelect = document.getElementById('course-thumbnail');
+            if (course.thumbnail) {
+                thumbSelect.value = course.thumbnail;
+            } else {
+                thumbSelect.value = '';
+            }
+            thumbSelect.dispatchEvent(new Event('change'));
         } catch (error) {
             console.error('Lỗi khi lấy thông tin khóa học:', error);
         }

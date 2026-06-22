@@ -75,6 +75,23 @@ app.get('/api/users/:id', authController.getUserProfile);
 // Routes tiến độ học tập
 app.get('/api/progress/:userId/:courseId', progressController.getProgress);
 app.post('/api/progress/complete', progressController.markCompleted);
+
+const fs = require('fs');
+const path = require('path');
+app.get('/api/images', async (req, res) => {
+  try {
+    const imagesDir = path.join(__dirname, '../frontend/src/images');
+    if (!fs.existsSync(imagesDir)) {
+      return res.json({ success: true, data: [] });
+    }
+    const files = await fs.promises.readdir(imagesDir);
+    const images = files.filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f));
+    res.json({ success: true, data: images });
+  } catch (error) {
+    console.error('Lỗi đọc thư mục ảnh:', error);
+    res.status(500).json({ success: false, message: 'Lỗi đọc danh sách ảnh' });
+  }
+});
 app.listen(port, () => {
   console.log(`Server dang chay tai http://localhost:${port}`);
 });
