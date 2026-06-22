@@ -18,14 +18,13 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
             throw new Error(data.message || 'Lỗi xử lý từ máy chủ!');
         }
         return { success: true, data: data };
-
     } catch (error) {
         console.error(`[Lỗi API] ${method} ${endpoint}:`, error);
         return { success: false, error: error.message };
     }
 }
 // 3. CÁC HÀM GIAO TIẾP NGHIỆP VỤ (API ENDPOINTS)
-const API = {   
+const API = {
     // --- CHỨC NĂNG 1: TRANG CHỦ DANH MỤC ---
     getCourses: async () => await fetchAPI('/courses'),
     // --- CHỨC NĂNG 2: CHI TIẾT KHÓA HỌC & GHI DANH ---
