@@ -48,13 +48,37 @@ async function setupDatabase() {
         FOREIGN KEY (course_id) REFERENCES Courses(id) ON DELETE CASCADE
       )
     `;
+    const createLessonProgressTable = `
+      CREATE TABLE IF NOT EXISTS LessonProgress (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        course_id INT NOT NULL,
+        lesson_id INT NOT NULL,
+        completed TINYINT DEFAULT 1,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        UNIQUE KEY user_course_lesson (user_id, course_id, lesson_id),
+        FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+        FOREIGN KEY (course_id) REFERENCES Courses(id) ON DELETE CASCADE,
+        FOREIGN KEY (lesson_id) REFERENCES Lessons(id) ON DELETE CASCADE
+      )
+    `;
     await pool.execute(createUsersTable);
     await pool.execute(createCoursesTable);
     await pool.execute(createLessonsTable);
     await pool.execute(createEnrollmentsTable);
+    await pool.execute(createLessonProgressTable);
+    
+    // Kiểm tra và thêm cột video_url nếu chưa có
+    const [columns] = await pool.execute("SHOW COLUMNS FROM Lessons LIKE 'video_url'");
+    if (columns.length === 0) {
+      await pool.execute("ALTER TABLE Lessons ADD COLUMN video_url VARCHAR(255)");
+      console.log("Đã thêm cột video_url vào bảng Lessons.");
+    }
+
     console.log("Khoi tao cac bang thanh cong.");
   } catch (error) {
     console.error("Loi khi tao bang:", error.message);
+    throw error;
   }
 }
 module.exports = {

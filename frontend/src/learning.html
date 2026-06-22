@@ -31,12 +31,18 @@
     <div class="workspace-layout">
         
         <main class="workspace-main-content">
-            <div class="video-container">
-                <video id="main-video-player" class="main-video-player" controls autoplay src=""></video>
+            <div class="video-container" id="video-container">
+                <iframe id="main-video-frame" class="main-video-frame" src="" title="Lesson video" allowfullscreen></iframe>
+                <div id="video-status-message" class="video-status-message hidden">Bài học này chưa có video.</div>
             </div>
             <div class="video-footer-info">
                 <h2 id="current-lesson-title" class="current-lesson-title">Đang tải bài giảng...</h2>
-                <p class="current-lesson-meta">Bài học nằm trong chương trình đào tạo chuẩn kỹ sư Nhóm 15.</p>
+                <p id="current-lesson-meta" class="current-lesson-meta">Bài 0/0</p>
+                <div class="lesson-action-bar">
+                    <button id="btn-prev-lesson" class="btn-action">Bài trước</button>
+                    <button id="btn-mark-completed" class="btn-action btn-completed">Đánh dấu đã học</button>
+                    <button id="btn-next-lesson" class="btn-action">Bài tiếp theo</button>
+                </div>
             </div>
         </main>
 

@@ -5,39 +5,30 @@ const lessonController = {
   // GET /api/courses/:id/lessons
   getLessons: async (req, res) => {
     try {
-      const courseId = req.params.id;
+      const courseId = Number(req.params.id);
+      if (!Number.isInteger(courseId) || courseId <= 0) {
+        return res.status(400).json({ message: 'Mã khóa học không hợp lệ.' });
+      }
+      const lessons = await LessonModel.getLessonsByCourseId(courseId);
       const course = await CourseModel.getCourseById(courseId);
       if (!course) {
         return res.status(404).json({ message: 'Không tìm thấy khóa học.' });
       }
-      const lessons = await LessonModel.getLessonsByCourseId(courseId);
       res.json(lessons);
     } catch (error) {
       console.error('Lỗi khi lấy danh sách bài học:', error);
       res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách bài học.' });
     }
   },
-  // 2. Lấy danh sách bài học của một khóa học (cho thanh sidebar danh sách)
-  // GET /api/courses/:courseId/lessons
-  getLessonsByCourse: async (req, res) => {
-    try {
-      const courseId = req.params.courseId;
-      const course = await CourseModel.getCourseById(courseId);
-      if (!course) {
-        return res.status(404).json({ message: 'Không tìm thấy khóa học.' });
-      }
-      const lessons = await LessonModel.getLessonsByCourseId(courseId);
-      res.json(lessons);
-    } catch (error) {
-      console.error('Lỗi khi lấy danh sách bài học:', error);
-      res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách bài học.' });
-    }
-  },
+
   // 3. Lấy chi tiết một bài học cụ thể (để lấy video_url hiển thị lên trình phát)
   // GET /api/lessons/:id
   getLessonDetail: async (req, res) => {
     try {
-      const lessonId = req.params.id;
+      const lessonId = Number(req.params.id);
+      if (!Number.isInteger(lessonId) || lessonId <= 0) {
+        return res.status(400).json({ message: 'Mã bài học không hợp lệ.' });
+      }
       const lesson = await LessonModel.getLessonById(lessonId);
       if (!lesson) {
         return res.status(404).json({ message: 'Không tìm thấy bài học.' });

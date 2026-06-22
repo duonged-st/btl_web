@@ -12,6 +12,9 @@
   --blue-600: #2563eb;
   --blue-700: #1d4ed8;
   --green-500: #22c55e;
+  --blue-50: #eff6ff;
+  --bg-blue-50: #eff6ff;
+  --text-gray-600: #4b5563;
 }
 
 * {
@@ -596,6 +599,8 @@ body {
   color: var(--text-gray-500);
 }
 
+
+
 /* Chi tiết tính giá */
 .price-breakdown {
   display: flex;
@@ -620,6 +625,7 @@ body {
 .text-blue {
   color: var(--blue-600);
 }
+
 
 /* Phần thanh toán QR & chuyển khoản */
 .payment-subtitle {
@@ -1320,3 +1326,12 @@ body {
     align-items: flex-start;
   }
 }
+.lesson-list-message {
+  padding: 1rem;
+  color: var(--text-gray-500);
+}
+
+.lesson-list-message.error {
+  color: #dc2626;
+}
+

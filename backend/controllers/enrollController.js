@@ -28,9 +28,9 @@ const enrollController = {
   // GET /api/enroll/user/:userId
   getEnrolledCourses: async (req, res) => {
     try {
-      const userId = req.params.userId;
-      if (!userId) {
-        return res.status(400).json({ message: 'Thiếu thông tin userId.' });
+      const userId = Number(req.params.userId);
+      if (!Number.isInteger(userId) || userId <= 0) {
+        return res.status(400).json({ message: 'Mã người dùng không hợp lệ.' });
       }
       const courses = await EnrollmentModel.getEnrolledCoursesByUser(userId);
       res.json(courses);

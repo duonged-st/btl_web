@@ -49,5 +49,12 @@ const API = {
         name: name,
         username: username,
         password: password
+    }),
+    // --- CHỨC NĂNG 6: TIẾN ĐỘ HỌC TẬP ---
+    getLessonProgress: async (userId, courseId) => await fetchAPI(`/progress/${userId}/${courseId}`, 'GET'),
+    markLessonCompleted: async (userId, courseId, lessonId) => await fetchAPI('/progress/complete', 'POST', {
+        user_id: userId,
+        course_id: courseId,
+        lesson_id: lessonId
     })
 };

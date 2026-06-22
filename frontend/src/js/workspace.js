@@ -1,44 +1,119 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const courseId = urlParams.get('id');
+    const courseIdParam = urlParams.get('id');
+    const courseId = Number(courseIdParam);
 
-    if (!courseId) {
+    if (!Number.isInteger(courseId) || courseId <= 0) {
         alert('Không tìm thấy thông tin khóa học!');
         return;
     }
 
+    const storedUserId = Number(localStorage.getItem('userId'));
+    const userId = Number.isInteger(storedUserId) && storedUserId > 0 ? storedUserId : 1;
+
+    // 1. Kiểm tra quyền học (người dùng đã đăng ký khóa học chưa)
+    try {
+        const enrollResponse = await API.getEnrolledCourses(userId);
+        if (enrollResponse.success && enrollResponse.data) {
+            const isEnrolled = enrollResponse.data.some(course => Number(course.id) === courseId);
+            if (!isEnrolled) {
+                alert('Bạn chưa đăng ký khóa học này!');
+                window.location.href = `course-detail.html?id=${courseId}`;
+                return;
+            }
+        } else {
+            alert('Lỗi kiểm tra quyền truy cập khóa học.');
+            window.location.href = 'index.html';
+            return;
+        }
+    } catch (error) {
+        console.error('Lỗi khi kiểm tra enroll:', error);
+        alert('Không thể xác thực quyền truy cập.');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // Các phần tử DOM
     const courseTitleEl = document.getElementById('workspace-course-title');
-    const mainVideoPlayer = document.getElementById('main-video-player');
+    const mainVideoFrame = document.getElementById('main-video-frame');
+    const videoStatusMessage = document.getElementById('video-status-message');
     const currentLessonTitleEl = document.getElementById('current-lesson-title');
+    const currentLessonMetaEl = document.getElementById('current-lesson-meta');
     const progressCountEl = document.getElementById('lesson-progress-count');
     const lessonListContainer = document.getElementById('workspace-lesson-list');
 
+    const btnPrev = document.getElementById('btn-prev-lesson');
+    const btnNext = document.getElementById('btn-next-lesson');
+    const btnMarkCompleted = document.getElementById('btn-mark-completed');
+
     let allLessons = [];
     let currentLessonId = null;
+    let completedLessonIds = [];
 
-    // Lấy danh sách bài học đã xem từ localStorage
-    const storageKey = `viewed_lessons_${courseId}`;
-    let viewedLessonIds = JSON.parse(localStorage.getItem(storageKey)) || [];
+    // Hàm tiện ích: Chuyển đổi link YouTube sang dạng embed
+    function getYouTubeEmbedUrl(url) {
+        if (!url) return '';
+        let videoId = '';
+        if (url.includes('youtube.com/watch?v=')) {
+            videoId = url.split('v=')[1].split('&')[0];
+        } else if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+        } else if (url.includes('youtube.com/embed/')) {
+            return url;
+        }
+        return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
+    }
 
-    // 1. Tải thông tin khóa học
+    // 2. Tải thông tin khóa học
     async function loadCourseInfo() {
         const response = await API.getCourseDetail(courseId);
         if (response.success && response.data) {
             courseTitleEl.textContent = response.data.title;
+            return true;
         } else {
-            console.error('Không thể tải thông tin khóa học:', response.error);
+            alert('Không thể tải thông tin khóa học.');
+            window.location.href = 'index.html';
+            return false;
         }
     }
 
-    // 2. Tải danh sách bài học và hiển thị
+    // 3. Tải tiến độ học tập
+    async function loadProgress() {
+        const response = await API.getLessonProgress(userId, courseId);
+        if (response.success) {
+            completedLessonIds = response.data.map(id => Number(id));
+            return true;
+        } else {
+            if (response.error && response.error.includes('Người dùng chưa đăng ký')) {
+                alert('Bạn chưa đăng ký khóa học này!');
+                window.location.href = `course-detail.html?id=${courseId}`;
+                return false;
+            } else {
+                alert('Không thể tải tiến độ học tập.');
+                completedLessonIds = [];
+                return true;
+            }
+        }
+    }
+
+    // 4. Tải danh sách bài học và hiển thị
     async function loadLessons() {
         const response = await API.getLessons(courseId);
         if (response.success && response.data) {
             allLessons = response.data;
             if (allLessons.length === 0) {
-                lessonListContainer.innerHTML = '<p class="loading-text" style="padding: 1rem;">Khóa học này chưa có bài học nào.</p>';
+                lessonListContainer.innerHTML = '<p class="lesson-list-message">Khóa học này chưa có bài học nào.</p>';
                 currentLessonTitleEl.textContent = 'Chưa có bài học';
+                currentLessonMetaEl.textContent = 'Bài 0/0';
                 progressCountEl.textContent = '0/0 bài';
+                mainVideoFrame.src = '';
+                mainVideoFrame.classList.add('hidden');
+                videoStatusMessage.textContent = 'Khóa học này chưa có bài học nào.';
+                videoStatusMessage.classList.remove('hidden');
+
+                btnPrev.disabled = true;
+                btnNext.disabled = true;
+                btnMarkCompleted.disabled = true;
                 return;
             }
             
@@ -46,37 +121,44 @@ document.addEventListener('DOMContentLoaded', () => {
             allLessons.sort((a, b) => (a.lesson_order || 0) - (b.lesson_order || 0));
 
             renderLessons();
-            updateProgress();
+            updateProgressText();
 
-            // Tự động phát bài đầu tiên nếu chưa chọn bài nào
-            if (allLessons.length > 0) {
-                playLesson(allLessons[0].id);
+            // Tìm bài đang học gần nhất hoặc mở bài đầu tiên
+            let startLessonId = allLessons[0].id;
+            for (let i = 0; i < allLessons.length; i++) {
+                if (!completedLessonIds.includes(Number(allLessons[i].id))) {
+                    startLessonId = allLessons[i].id;
+                    break;
+                }
             }
+            playLesson(startLessonId);
         } else {
-            lessonListContainer.innerHTML = '<p class="loading-text" style="padding: 1rem; color: red;">Lỗi tải bài học.</p>';
-            console.error('Không thể tải danh sách bài học:', response.error);
+            lessonListContainer.innerHTML = '<p class="lesson-list-message error">Lỗi tải bài học.</p>';
         }
     }
 
-    // 3. Hiển thị danh sách bài học trên sidebar
+    // 5. Hiển thị danh sách bài học trên sidebar
     function renderLessons() {
         lessonListContainer.innerHTML = '';
         allLessons.forEach((lesson, index) => {
-            const isCompleted = viewedLessonIds.includes(lesson.id);
+            const isCompleted = completedLessonIds.includes(Number(lesson.id));
             const isActive = lesson.id === currentLessonId;
 
             const btn = document.createElement('button');
-            btn.className = `workspace-lesson-item ${isActive ? 'active-lesson' : ''}`;
+            btn.className = `workspace-lesson-item ${isActive ? 'active-lesson' : ''} ${isCompleted ? 'completed' : ''}`;
             
-            // Icon trạng thái (đã học hay chưa)
-            const icon = isCompleted 
-                ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color: #22c55e; flex-shrink: 0;"><path d="M20 6 9 17l-5-5"/></svg>' 
-                : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5; flex-shrink: 0;"><polygon points="6 3 20 12 6 21 6 3"/></svg>';
+            const icon = isCompleted ? '✓' : '▶';
 
-            btn.innerHTML = `
-                <span style="display: flex; align-items: center; justify-content: center; margin-right: 0.5rem; flex-shrink: 0;">${icon}</span>
-                <span style="flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left;">Bài ${index + 1}: ${lesson.title}</span>
-            `;
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'lesson-item-icon';
+            iconSpan.textContent = icon;
+
+            const titleSpan = document.createElement('span');
+            titleSpan.className = 'lesson-item-title';
+            titleSpan.textContent = `Bài ${index + 1}: ${lesson.title}`;
+
+            btn.appendChild(iconSpan);
+            btn.appendChild(titleSpan);
 
             btn.addEventListener('click', () => {
                 playLesson(lesson.id);
@@ -86,63 +168,112 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Phát một bài học cụ thể
+    // 6. Phát một bài học cụ thể
     async function playLesson(lessonId) {
         currentLessonId = lessonId;
         renderLessons(); // Cập nhật trạng thái active trên giao diện sidebar
+        updateButtonStates();
 
         currentLessonTitleEl.textContent = 'Đang tải bài giảng...';
-        mainVideoPlayer.src = '';
+        currentLessonMetaEl.textContent = `Bài 0/0`;
+        mainVideoFrame.src = '';
+        mainVideoFrame.classList.add('hidden');
+        videoStatusMessage.classList.add('hidden');
 
         const response = await API.getLessonDetail(lessonId);
         if (response.success && response.data) {
             const lesson = response.data;
             currentLessonTitleEl.textContent = lesson.title;
+            const currentIndex = allLessons.findIndex(l => l.id === currentLessonId);
+            currentLessonMetaEl.textContent = `Bài ${currentIndex + 1}/${allLessons.length}`;
             
-            // Đưa video_url vào player
-            if (lesson.video_url) {
-                mainVideoPlayer.src = lesson.video_url;
+            const embedUrl = getYouTubeEmbedUrl(lesson.video_url);
+            if (embedUrl) {
+                mainVideoFrame.src = embedUrl;
+                mainVideoFrame.classList.remove('hidden');
             } else {
-                // Video demo mặc định nếu bài học không chứa link video
-                mainVideoPlayer.src = 'https://www.w3schools.com/html/mov_bbb.mp4'; 
+                videoStatusMessage.textContent = 'Bài học này chưa có video.';
+                videoStatusMessage.classList.remove('hidden');
             }
-            mainVideoPlayer.load();
-            mainVideoPlayer.play().catch(err => {
-                console.log('Tự động phát bị chặn bởi trình duyệt:', err);
-            });
         } else {
             currentLessonTitleEl.textContent = 'Lỗi khi tải bài học!';
-            console.error('Lỗi chi tiết bài học:', response.error);
+            const currentIndex = allLessons.findIndex(l => l.id === currentLessonId);
+            currentLessonMetaEl.textContent = `Bài ${currentIndex !== -1 ? currentIndex + 1 : 0}/${allLessons.length}`;
+            videoStatusMessage.textContent = 'Không thể tải nội dung bài học.';
+            videoStatusMessage.classList.remove('hidden');
+            btnMarkCompleted.disabled = true;
         }
     }
 
-    // 5. Cập nhật tiến độ học tập
-    function updateProgress() {
-        const currentCourseLessonIds = allLessons.map(l => l.id);
-        const completedCount = viewedLessonIds.filter(id => currentCourseLessonIds.includes(id)).length;
+    // 7. Cập nhật tiến độ text
+    function updateProgressText() {
+        const currentCourseLessonIds = allLessons.map(l => Number(l.id));
+        const completedCount = completedLessonIds.filter(id => currentCourseLessonIds.includes(id)).length;
         progressCountEl.textContent = `${completedCount}/${allLessons.length} bài`;
     }
 
-    // 6. Xử lý khi xem hết video bài học
-    mainVideoPlayer.addEventListener('ended', () => {
-        if (currentLessonId && !viewedLessonIds.includes(currentLessonId)) {
-            viewedLessonIds.push(currentLessonId);
-            localStorage.setItem(storageKey, JSON.stringify(viewedLessonIds));
-            updateProgress();
-            renderLessons();
-        }
-
-        // Tự động chuyển sang bài tiếp theo trong danh sách
+    // 8. Cập nhật trạng thái các nút điều hướng
+    function updateButtonStates() {
         const currentIndex = allLessons.findIndex(l => l.id === currentLessonId);
-        if (currentIndex !== -1 && currentIndex < allLessons.length - 1) {
-            const nextLesson = allLessons[currentIndex + 1];
-            setTimeout(() => {
-                playLesson(nextLesson.id);
-            }, 1000); // Đợi 1 giây rồi tự chuyển bài
+        
+        btnPrev.disabled = currentIndex <= 0;
+        btnNext.disabled = currentIndex === -1 || currentIndex >= allLessons.length - 1;
+        
+        const isCompleted = completedLessonIds.includes(Number(currentLessonId));
+        if (isCompleted) {
+            btnMarkCompleted.textContent = 'Đã hoàn thành';
+            btnMarkCompleted.disabled = true;
+            btnMarkCompleted.classList.remove('btn-completed'); // Loại bỏ style nút nổi bật nếu đã học
+        } else {
+            btnMarkCompleted.textContent = 'Đánh dấu đã học';
+            btnMarkCompleted.disabled = false;
+            btnMarkCompleted.classList.add('btn-completed');
+        }
+    }
+
+    // Sự kiện các nút
+    btnPrev.addEventListener('click', () => {
+        const currentIndex = allLessons.findIndex(l => l.id === currentLessonId);
+        if (currentIndex > 0) {
+            playLesson(allLessons[currentIndex - 1].id);
         }
     });
 
-    // Bắt đầu tải dữ liệu
-    loadCourseInfo();
-    loadLessons();
+    btnNext.addEventListener('click', () => {
+        const currentIndex = allLessons.findIndex(l => l.id === currentLessonId);
+        if (currentIndex !== -1 && currentIndex < allLessons.length - 1) {
+            playLesson(allLessons[currentIndex + 1].id);
+        }
+    });
+
+    btnMarkCompleted.addEventListener('click', async () => {
+        if (!currentLessonId) return;
+        
+        btnMarkCompleted.disabled = true;
+        btnMarkCompleted.textContent = 'Đang lưu...';
+
+        const response = await API.markLessonCompleted(userId, courseId, currentLessonId);
+        
+        if (response.success) {
+            if (!completedLessonIds.includes(Number(currentLessonId))) {
+                completedLessonIds.push(Number(currentLessonId));
+            }
+            updateProgressText();
+            renderLessons();
+            updateButtonStates();
+        } else {
+            alert('Lỗi khi lưu tiến độ: ' + response.error);
+            btnMarkCompleted.disabled = false;
+            btnMarkCompleted.textContent = 'Đánh dấu đã học';
+        }
+    });
+
+    // Bắt đầu luồng
+    const courseLoaded = await loadCourseInfo();
+    if (!courseLoaded) return;
+
+    const progressLoaded = await loadProgress();
+    if (!progressLoaded) return;
+
+    await loadLessons();
 });

@@ -39,6 +39,7 @@ const EnrollmentModel = {
       return rows;
     } catch (error) {
         console.error('Error fetching enrolled courses:', error);
+        throw error;
     }
   }
 };
