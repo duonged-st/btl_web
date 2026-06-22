@@ -1,12 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const courseId = urlParams.get('id');
-
-    if (!courseId) {
-        alert('Không tìm thấy thông tin khóa học!');
-        window.location.href = 'index.html';
-        return;
-    }
+    // PHẦN BỔ SUNG: nếu mở trực tiếp course-detail.html thì hiển thị khóa học web mặc định.
+    const courseId = urlParams.get('id') || WEB_DESIGN_COURSE_ID;
 
     // Thiết lập userId giả định cho học viên (hoặc lấy từ hệ thống nếu có)
     const userId = localStorage.getItem('userId') || 1;
@@ -49,12 +44,50 @@ document.addEventListener('DOMContentLoaded', () => {
             lessons.sort((a, b) => (a.lesson_order || 0) - (b.lesson_order || 0));
 
             lessons.forEach((lesson, index) => {
-                const item = document.createElement('div');
+                const item = document.createElement('button');
+                item.type = 'button';
                 item.className = 'lesson-preview-item';
+                item.setAttribute('aria-pressed', 'false');
+
                 item.innerHTML = `
-                    <span>Bài ${index + 1}: ${lesson.title}</span>
-                    <span style="color: var(--text-gray-500); font-size: 0.75rem;">Học thử</span>
+                    <span class="lesson-preview-main">
+                        <span class="lesson-preview-number">${index + 1}</span>
+                        <span class="lesson-preview-title">Bài ${index + 1}: ${lesson.title}</span>
+                    </span>
+                    <span class="lesson-preview-status">Chọn bài</span>
                 `;
+
+                // [THÊM MỚI] Khi bấm vào một bài:
+                // 1. Bỏ trạng thái được chọn ở tất cả bài khác.
+                // 2. Đánh dấu bài vừa bấm là bài đang được chọn.
+                // 3. Đổi chữ "Chọn bài" thành "Đã chọn".
+                item.addEventListener('click', () => {
+                    const allLessonItems =
+                        lessonPreviewList.querySelectorAll('.lesson-preview-item');
+
+                    allLessonItems.forEach(lessonItem => {
+                        lessonItem.classList.remove('selected');
+                        lessonItem.setAttribute('aria-pressed', 'false');
+
+                        const status =
+                            lessonItem.querySelector('.lesson-preview-status');
+
+                        if (status) {
+                            status.textContent = 'Chọn bài';
+                        }
+                    });
+
+                    item.classList.add('selected');
+                    item.setAttribute('aria-pressed', 'true');
+
+                    const selectedStatus =
+                        item.querySelector('.lesson-preview-status');
+
+                    if (selectedStatus) {
+                        selectedStatus.textContent = 'Đã chọn ✓';
+                    }
+                });
+
                 lessonPreviewList.appendChild(item);
             });
         } else {
@@ -83,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnAction.disabled = true;
         btnAction.textContent = 'Đang kiểm tra...';
 
-        const response = await API.getEnrolledCourses(userId);
+        const response = await API.getUserEnrolledCourses(userId);
         btnAction.disabled = false;
 
         let isEnrolled = false;

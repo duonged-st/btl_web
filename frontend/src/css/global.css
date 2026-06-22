@@ -521,3 +521,242 @@ body {
 .workspace-lesson-item.active-lesson { background-color: var(--blue-100); color: var(--blue-700); font-weight: 600; }
 .button { padding: 0.35rem 0.75rem; border: 1px solid var(--border-gray-200); background-color: var(--bg-white); text-decoration: none; font-size: 1rem; font-weight: 500; border-radius: 4px; cursor: pointer; }
 .button:hover { background-color: var(--bg-blue-50); }
+
+/* =========================================================
+   [THÊM MỚI] GIAO DIỆN THẺ KHÓA HỌC ĐƠN GIẢN, HIỆN ĐẠI
+   ========================================================= */
+
+.course-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  overflow: hidden;
+  cursor: default;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  border-color: #bfdbfe;
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.12);
+}
+
+.course-thumbnail-wrapper {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.course-thumbnail {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.course-card:hover .course-thumbnail {
+  transform: scale(1.04);
+}
+
+.course-badge {
+  top: 0.75rem;
+  right: 0.75rem;
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  background: rgba(37, 99, 235, 0.94);
+  backdrop-filter: blur(4px);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.course-badge.free {
+  background: rgba(22, 163, 74, 0.94);
+}
+
+.course-info {
+  padding: 1.15rem;
+}
+
+.course-title {
+  height: auto;
+  margin-bottom: 0.45rem;
+  color: #0f172a;
+  font-size: 1.05rem;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.course-desc {
+  height: 2.5rem;
+  margin-bottom: 1rem;
+  color: #64748b;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.course-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.9rem;
+}
+
+.course-price {
+  color: #16a34a;
+  font-size: 0.9rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.btn-course-detail {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.45rem;
+  padding: 0.55rem 0.9rem;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-course-detail:hover {
+  background: #1d4ed8;
+  transform: translateX(2px);
+}
+
+.btn-course-detail:focus-visible {
+  outline: 3px solid #bfdbfe;
+  outline-offset: 2px;
+}
+
+@media (max-width: 420px) {
+  .course-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .btn-course-detail {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   [THÊM MỚI] NÚT XEM CHI TIẾT CĂN PHẢI SAU KHI XÓA GIÁ DƯỚI
+   ========================================================= */
+
+.course-footer-single {
+  justify-content: flex-end;
+}
+
+/* =========================================================
+   [THÊM MỚI] HIỆU ỨNG CHỌN BÀI TRONG PHẦN ĐỀ CƯƠNG
+   ========================================================= */
+
+.lesson-preview-item {
+  width: 100%;
+  appearance: none;
+  font-family: inherit;
+  color: var(--text-gray-800);
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.lesson-preview-item:hover {
+  transform: translateX(5px);
+  border-color: #93c5fd;
+  background-color: #eff6ff;
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.08);
+}
+
+.lesson-preview-item:active {
+  transform: translateX(5px) scale(0.99);
+}
+
+.lesson-preview-item:focus-visible {
+  border-color: var(--blue-600);
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+
+.lesson-preview-main {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.lesson-preview-number {
+  width: 1.8rem;
+  height: 1.8rem;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.lesson-preview-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lesson-preview-status {
+  flex-shrink: 0;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background-color: #f1f5f9;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.lesson-preview-item.selected {
+  transform: translateX(5px);
+  border-color: var(--blue-600);
+  background-color: var(--blue-100);
+  box-shadow: 0 7px 18px rgba(37, 99, 235, 0.14);
+}
+
+.lesson-preview-item.selected .lesson-preview-number {
+  background-color: var(--blue-600);
+  color: #ffffff;
+}
+
+.lesson-preview-item.selected .lesson-preview-status {
+  background-color: var(--blue-600);
+  color: #ffffff;
+}
+
+@media (max-width: 520px) {
+  .lesson-preview-title {
+    white-space: normal;
+  }
+
+  .lesson-preview-item {
+    align-items: flex-start;
+  }
+}

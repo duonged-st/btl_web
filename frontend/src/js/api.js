@@ -41,3 +41,137 @@ const API = {
     getUserProfile: async (userId) => await fetchAPI(`/users/${userId}`),
     getUserEnrolledCourses: async (userId) => await fetchAPI(`/enroll/user/${userId}`)
 };
+// =============================================================
+// PHẦN BỔ SUNG: KHÓA HỌC MIỄN PHÍ "THIẾT KẾ VÀ LẬP TRÌNH WEB"
+// Giữ nguyên toàn bộ API cũ, chỉ bổ sung dữ liệu dự phòng phía frontend.
+// Khi backend đã có khóa học cùng ID, dữ liệu backend vẫn được ưu tiên.
+// =============================================================
+const WEB_DESIGN_COURSE_ID = 'web-design-programming-free';
+
+const WEB_DESIGN_COURSE = {
+    id: WEB_DESIGN_COURSE_ID,
+    title: 'Thiết kế và lập trình web',
+    description: 'Khóa học miễn phí giúp người mới học cách xây dựng một website hoàn chỉnh từ HTML, CSS và JavaScript. Nội dung đi từ cấu trúc trang web, thiết kế giao diện responsive đến xử lý tương tác và hoàn thiện sản phẩm cuối khóa.',
+    price: 0,
+    thumbnail: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200'
+};
+
+const WEB_DESIGN_LESSONS = [
+    {
+        id: 'web-lesson-1',
+        course_id: WEB_DESIGN_COURSE_ID,
+        lesson_order: 1,
+        title: 'Tổng quan về thiết kế và lập trình web',
+        video_url: 'https://www.w3schools.com/html/mov_bbb.mp4'
+    },
+    {
+        id: 'web-lesson-2',
+        course_id: WEB_DESIGN_COURSE_ID,
+        lesson_order: 2,
+        title: 'Xây dựng cấu trúc trang web bằng HTML',
+        video_url: 'https://www.w3schools.com/html/movie.mp4'
+    },
+    {
+        id: 'web-lesson-3',
+        course_id: WEB_DESIGN_COURSE_ID,
+        lesson_order: 3,
+        title: 'Trang trí giao diện bằng CSS',
+        video_url: 'https://www.w3schools.com/html/mov_bbb.mp4'
+    },
+    {
+        id: 'web-lesson-4',
+        course_id: WEB_DESIGN_COURSE_ID,
+        lesson_order: 4,
+        title: 'Thiết kế responsive cho điện thoại và máy tính',
+        video_url: 'https://www.w3schools.com/html/movie.mp4'
+    },
+    {
+        id: 'web-lesson-5',
+        course_id: WEB_DESIGN_COURSE_ID,
+        lesson_order: 5,
+        title: 'Tạo tương tác bằng JavaScript',
+        video_url: 'https://www.w3schools.com/html/mov_bbb.mp4'
+    }
+];
+
+// Lưu lại các hàm API cũ để không làm mất chức năng backend hiện có.
+const originalGetCourses = API.getCourses;
+const originalGetCourseDetail = API.getCourseDetail;
+const originalEnrollCourse = API.enrollCourse;
+const originalGetLessons = API.getLessons;
+const originalGetLessonDetail = API.getLessonDetail;
+const originalGetUserEnrolledCourses = API.getUserEnrolledCourses;
+
+// Bổ sung khóa học vào danh mục, nhưng không tạo bản trùng nếu backend đã có.
+API.getCourses = async () => {
+    const response = await originalGetCourses();
+    const backendCourses = response.success && Array.isArray(response.data) ? response.data : [];
+    const courseExists = backendCourses.some(course => String(course.id) === WEB_DESIGN_COURSE_ID);
+
+    return {
+        success: true,
+        data: courseExists ? backendCourses : [...backendCourses, WEB_DESIGN_COURSE]
+    };
+};
+
+// Trả về chi tiết khóa học mới ngay trên frontend.
+API.getCourseDetail = async (courseId) => {
+    if (String(courseId) === WEB_DESIGN_COURSE_ID) {
+        return { success: true, data: WEB_DESIGN_COURSE };
+    }
+    return await originalGetCourseDetail(courseId);
+};
+
+// Trả về đề cương của khóa học mới.
+API.getLessons = async (courseId) => {
+    if (String(courseId) === WEB_DESIGN_COURSE_ID) {
+        return { success: true, data: WEB_DESIGN_LESSONS };
+    }
+    return await originalGetLessons(courseId);
+};
+
+// Trả về chi tiết từng bài học của khóa học mới.
+API.getLessonDetail = async (lessonId) => {
+    const lesson = WEB_DESIGN_LESSONS.find(item => String(item.id) === String(lessonId));
+    if (lesson) {
+        return { success: true, data: lesson };
+    }
+    return await originalGetLessonDetail(lessonId);
+};
+
+// Với khóa học miễn phí, ghi danh được lưu tạm bằng localStorage.
+API.enrollCourse = async (userId, courseId) => {
+    if (String(courseId) === WEB_DESIGN_COURSE_ID) {
+        const storageKey = `enrolled_courses_${userId}`;
+        const enrolledIds = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+        if (!enrolledIds.includes(WEB_DESIGN_COURSE_ID)) {
+            enrolledIds.push(WEB_DESIGN_COURSE_ID);
+            localStorage.setItem(storageKey, JSON.stringify(enrolledIds));
+        }
+
+        return {
+            success: true,
+            data: { user_id: userId, course_id: WEB_DESIGN_COURSE_ID }
+        };
+    }
+    return await originalEnrollCourse(userId, courseId);
+};
+
+// Ghép khóa học đã đăng ký cục bộ với danh sách từ backend.
+API.getUserEnrolledCourses = async (userId) => {
+    const response = await originalGetUserEnrolledCourses(userId);
+    const backendCourses = response.success && Array.isArray(response.data) ? response.data : [];
+    const storageKey = `enrolled_courses_${userId}`;
+    const localEnrolledIds = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+    const hasLocalWebCourse = localEnrolledIds.includes(WEB_DESIGN_COURSE_ID);
+    const alreadyInBackend = backendCourses.some(course => String(course.id) === WEB_DESIGN_COURSE_ID);
+
+    return {
+        success: true,
+        data: hasLocalWebCourse && !alreadyInBackend
+            ? [...backendCourses, WEB_DESIGN_COURSE]
+            : backendCourses
+    };
+};

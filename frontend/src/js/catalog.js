@@ -29,14 +29,38 @@ document.addEventListener('DOMContentLoaded', () => {
         courses.forEach(course => {
             const courseCard = document.createElement('div');
             courseCard.className = 'course-card';
+            // [CHỈNH SỬA GIAO DIỆN] Giữ nguyên dữ liệu, chỉ thêm class để thẻ đẹp và dễ đọc hơn
+            const formattedPrice = course.price === 0
+                ? 'Miễn phí'
+                : Number(course.price).toLocaleString('vi-VN') + ' đ';
+
             courseCard.innerHTML = `
-                <img src="${course.thumbnail || 'default-image.jpg'}" alt="${course.title}">
+                <div class="course-thumbnail-wrapper">
+                    <img
+                        class="course-thumbnail"
+                        src="${course.thumbnail || 'default-image.jpg'}"
+                        alt="${course.title}"
+                    >
+                    <span class="course-badge ${course.price === 0 ? 'free' : ''}">
+                        ${formattedPrice}
+                    </span>
+                </div>
+
                 <div class="course-info">
-                    <h3>${course.title}</h3>
-                    <p class="price">${course.price === 0 ? 'Miễn phí' : course.price + ' VNĐ'}</p>
-                    <button onclick="window.location.href='course-detail.html?id=${course.id}'">
-                        Xem chi tiết
-                    </button>
+                    <h3 class="course-title">${course.title}</h3>
+                    <p class="course-desc">
+                        ${course.description || 'Khóa học giúp bạn xây dựng kiến thức và kỹ năng thực tế.'}
+                    </p>
+
+                    <div class="course-footer course-footer-single">
+                        <button
+                            class="btn-course-detail"
+                            onclick="window.location.href='course-detail.html?id=${course.id}'"
+                        >
+                            Xem chi tiết
+                            <span aria-hidden="true">→</span>
+                        </button>
+                    </div>
                 </div>
             `;
             courseGrid.appendChild(courseCard);
