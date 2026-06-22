@@ -4,11 +4,12 @@ const LessonModel = {
   // 1. Hàm lấy danh sách bài học của một khóa học (Dùng cho giao diện Learning Workspace)
   getLessonsByCourseId: async (course_id) => {
     try {
-      const query = 'SELECT id, title, lesson_order FROM Lessons WHERE course_id = ? ORDER BY lesson_order ASC';
+      const query = 'SELECT id, course_id, title, lesson_order FROM Lessons WHERE course_id = ? ORDER BY lesson_order ASC';
       const [rows] = await pool.execute(query, [course_id]);      
       return rows; 
     } catch (error) {
         console.error('Error fetching lessons by course ID:', error);
+        throw error;
     }
   },
   // 2. Hàm lấy chi tiết một bài học (Dùng khi người dùng bấm vào một bài học cụ thể để xem)
@@ -19,6 +20,7 @@ const LessonModel = {
       return rows[0]; 
     } catch (error) {
         console.error('Error fetching lesson by ID:', error);
+        throw error;
     }
   }
 };

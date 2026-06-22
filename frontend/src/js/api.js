@@ -39,5 +39,13 @@ const API = {
     getLessonDetail: async (lessonId) => await fetchAPI(`/lessons/${lessonId}`, 'GET'),
     // --- CHỨC NĂNG 4: NGƯỜI DÙNG & HỒ SƠ ---
     getUserProfile: async (userId) => await fetchAPI(`/users/${userId}`),
-    getUserEnrolledCourses: async (userId) => await fetchAPI(`/enroll/user/${userId}`)
+    getUserEnrolledCourses: async (userId) => await fetchAPI(`/enroll/user/${userId}`),
+    getEnrolledCourses: async (userId) => await fetchAPI(`/enroll/user/${userId}`), // Alias cho getUserEnrolledCourses để tránh lỗi tương thích
+    // --- CHỨC NĂNG 5: TIẾN ĐỘ HỌC TẬP ---
+    getLessonProgress: async (userId, courseId) => await fetchAPI(`/progress/${userId}/${courseId}`, 'GET'),
+    markLessonCompleted: async (userId, courseId, lessonId) => await fetchAPI('/progress/complete', 'POST', {
+        user_id: userId,
+        course_id: courseId,
+        lesson_id: lessonId
+    })
 };

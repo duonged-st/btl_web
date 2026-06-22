@@ -10,6 +10,9 @@
   --blue-600: #2563eb;
   --blue-700: #1d4ed8;
   --green-500: #22c55e;
+  --blue-50: #eff6ff;
+  --bg-blue-50: #eff6ff;
+  --text-gray-600: #4b5563;
 }
 
 * {
@@ -501,23 +504,42 @@ body {
 }
 
 /* Khu vực Video */
-.video-container { width: 100%; aspect-ratio: 16/9; background-color: #000000; display: flex; align-items: center; justify-content: center; max-height: 70vh; }
-.main-video-player { width: 100%; height: 100%; outline: none; }
+.video-container { width: 100%; aspect-ratio: 16/9; background-color: #000000; display: flex; align-items: center; justify-content: center; max-height: 70vh; position: relative;}
+.main-video-frame { width: 100%; height: 100%; outline: none; border: none; }
+.video-status-message { position: absolute; color: white; font-size: 1.125rem; }
 .video-footer-info { padding: 1.5rem; background-color: var(--bg-white); border-bottom: 1px solid var(--border-gray-100); flex-grow: 1; }
 .current-lesson-title { font-size: 1.25rem; font-weight: 700; color: var(--text-gray-900); margin-bottom: 0.25rem; }
-.current-lesson-meta { font-size: 0.8rem; color: var(--text-gray-500); }
+.current-lesson-meta { font-size: 0.8rem; color: var(--text-gray-500); margin-bottom: 1rem; }
+.lesson-action-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.btn-action { padding: 0.5rem 1rem; border: 1px solid var(--border-gray-200); background-color: var(--bg-white); color: var(--text-gray-800); font-size: 0.875rem; font-weight: 500; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+.btn-action:hover { background-color: var(--bg-gray-50); }
+.btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-completed { background-color: var(--green-500); color: white; border-color: var(--green-500); }
+.btn-completed:hover { background-color: #16a34a; }
 
 /* Danh sách Bài học bên Sidebar */
-.sidebar-header { padding: 1rem; border-bottom: 1px solid var(--border-gray-100); display: flex; justify-content: space-between; items-center: center; }
+.sidebar-header { padding: 1rem; border-bottom: 1px solid var(--border-gray-100); display: flex; justify-content: space-between; align-items: center; }
 .sidebar-title { font-size: 0.875rem; font-weight: 700; color: var(--text-gray-900); }
 .progress-badge { font-size: 0.75rem; font-weight: 600; background-color: var(--blue-50); color: var(--blue-700); padding: 0.25rem 0.5rem; border-radius: 9999px; }
 
 .workspace-lesson-list { flex-grow: 1; overflow-y: auto; padding: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem; }
 
+.lesson-list-message {
+  padding: 1rem;
+  color: var(--text-gray-500);
+}
+
+.lesson-list-message.error {
+  color: #dc2626;
+}
+
 /* Item Bài giảng mục lục */
 .workspace-lesson-item { width: 100%; border: none; text-align: left; padding: 0.75rem 1rem; font-size: 0.85rem; color: var(--text-gray-800); background-color: transparent; border-radius: 4px; cursor: pointer; transition: all 0.2s; display: flex; gap: 0.5rem; }
 .workspace-lesson-item:hover { background-color: var(--border-gray-100); }
+.lesson-item-icon { display: flex; align-items: center; justify-content: center; margin-right: 0.5rem; flex-shrink: 0; }
+.lesson-item-title { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
 
 .workspace-lesson-item.active-lesson { background-color: var(--blue-100); color: var(--blue-700); font-weight: 600; }
+.workspace-lesson-item.completed { color: var(--green-500); }
 .button { padding: 0.35rem 0.75rem; border: 1px solid var(--border-gray-200); background-color: var(--bg-white); text-decoration: none; font-size: 1rem; font-weight: 500; border-radius: 4px; cursor: pointer; }
 .button:hover { background-color: var(--bg-blue-50); }

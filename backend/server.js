@@ -8,17 +8,23 @@ app.use(cors());
 const courseController = require('./controllers/courseController');
 const enrollController = require('./controllers/enrollController');
 const lessonController = require('./controllers/lessonController');
+const progressController = require('./controllers/progressController');
 app.get('/api/setup-db', async (req, res) => {
-  await setupDatabase();
-  res.json({ message: "Da chay lenh khoi tao CSDL. Vui long kiem tra MySQL." });
+  try {
+    await setupDatabase();
+    res.json({ message: "Đã chạy lệnh khởi tạo CSDL. Vui lòng kiểm tra MySQL." });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi khởi tạo CSDL.", error: error.message });
+  }
 });
 app.get('/api/courses', courseController.getCourses);
 app.get('/api/courses/:id', courseController.getCourseDetail);
 app.get('/api/courses/:id/lessons', lessonController.getLessons);
-app.get('/api/courses/:courseId/lessons', lessonController.getLessonsByCourse);
 app.get('/api/lessons/:id', lessonController.getLessonDetail);
 app.post('/api/enroll', enrollController.enrollCourse);
 app.get('/api/enroll/user/:userId', enrollController.getEnrolledCourses);
+app.get('/api/progress/:userId/:courseId', progressController.getProgress);
+app.post('/api/progress/complete', progressController.markCompleted);
 app.listen(port, () => {
   console.log(`Server dang chay tai http://localhost:${port}`);
 });
