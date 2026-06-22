@@ -19,3 +19,11 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Backend lock files
+backend/package-lock.json
+backend/package.json
+
+# Frontend lock files
+frontend/package-lock.json
+frontend/package.json

@@ -57,8 +57,14 @@ app.get('/api/seed', async (req, res) => {
 // Routes khóa học & bài học
 app.get('/api/courses', courseController.getCourses);
 app.get('/api/courses/:id', courseController.getCourseDetail);
+app.post('/api/courses', courseController.createCourse);
+app.put('/api/courses/:id', courseController.updateCourse);
+app.delete('/api/courses/:id', courseController.deleteCourse);
+
 app.get('/api/courses/:id/lessons', lessonController.getLessons);
 app.get('/api/lessons/:id', lessonController.getLessonDetail);
+app.post('/api/lessons', lessonController.addLesson);
+app.delete('/api/lessons/:id', lessonController.deleteLesson);
 // Routes ghi danh
 app.post('/api/enroll', enrollController.enrollCourse);
 app.get('/api/enroll/user/:userId', enrollController.getEnrolledCourses);

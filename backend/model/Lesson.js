@@ -22,6 +22,31 @@ const LessonModel = {
         console.error('Error fetching lesson by ID:', error);
         throw error;
     }
+  },
+
+  // 3. Hàm thêm bài học (video) vào khóa học
+  addLesson: async (lessonData) => {
+    try {
+      const { course_id, title, video_url, lesson_order } = lessonData;
+      const query = 'INSERT INTO Lessons (course_id, title, video_url, lesson_order) VALUES (?, ?, ?, ?)';
+      const [result] = await pool.execute(query, [course_id, title, video_url, lesson_order]);
+      return result.insertId;
+    } catch (error) {
+      console.error('Error adding lesson:', error);
+      throw error;
+    }
+  },
+
+  // 4. Hàm xóa bài học
+  deleteLesson: async (id) => {
+    try {
+      const query = 'DELETE FROM Lessons WHERE id = ?';
+      const [result] = await pool.execute(query, [id]);
+      return result.affectedRows > 0;
+    } catch (error) {
+      console.error('Error deleting lesson:', error);
+      throw error;
+    }
   }
 };
 

@@ -38,6 +38,38 @@ const lessonController = {
       console.error('Lỗi khi lấy chi tiết bài học:', error);
       res.status(500).json({ message: 'Lỗi máy chủ khi lấy chi tiết bài học.' });
     }
+  },
+
+  // 4. Thêm bài học (video) mới vào khóa học
+  // POST /api/lessons
+  addLesson: async (req, res) => {
+    try {
+      const { course_id, title, video_url, lesson_order } = req.body;
+      if (!course_id || !title || !video_url) {
+        return res.status(400).json({ message: 'Vui lòng cung cấp đủ thông tin bài học (course_id, title, video_url).' });
+      }
+      const lessonId = await LessonModel.addLesson({ course_id, title, video_url, lesson_order: lesson_order || 0 });
+      res.status(201).json({ message: 'Thêm bài học thành công.', lessonId });
+    } catch (error) {
+      console.error('Lỗi khi thêm bài học:', error);
+      res.status(500).json({ message: 'Lỗi máy chủ khi thêm bài học.' });
+    }
+  },
+
+  // 5. Xóa bài học
+  // DELETE /api/lessons/:id
+  deleteLesson: async (req, res) => {
+    try {
+      const lessonId = req.params.id;
+      const success = await LessonModel.deleteLesson(lessonId);
+      if (!success) {
+        return res.status(404).json({ message: 'Không tìm thấy bài học để xóa.' });
+      }
+      res.json({ message: 'Xóa bài học thành công.' });
+    } catch (error) {
+      console.error('Lỗi khi xóa bài học:', error);
+      res.status(500).json({ message: 'Lỗi máy chủ khi xóa bài học.' });
+    }
   }
 };
 module.exports = lessonController;
