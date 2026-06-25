@@ -117,13 +117,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 mainVideoFrame.classList.add('hidden');
                 videoStatusMessage.textContent = 'Khóa học này chưa có bài học nào.';
                 videoStatusMessage.classList.remove('hidden');
-
                 btnPrev.disabled = true;
                 btnNext.disabled = true;
                 btnMarkCompleted.disabled = true;
                 return;
             }
-            
             // Sắp xếp bài học theo thứ tự lesson_order
             allLessons.sort((a, b) => (a.lesson_order || 0) - (b.lesson_order || 0));
 

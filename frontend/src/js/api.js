@@ -6,7 +6,8 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
         method: method,
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        credentials: 'include'
     };
     if (body) {
         options.body = JSON.stringify(body);
@@ -50,6 +51,7 @@ const API = {
         username: username,
         password: password
     }),
+    logout: async () => await fetchAPI('/auth/logout', 'POST'),
     // --- CHỨC NĂNG 6: TIẾN ĐỘ HỌC TẬP ---
     getLessonProgress: async (userId, courseId) => await fetchAPI(`/progress/${userId}/${courseId}`, 'GET'),
     markLessonCompleted: async (userId, courseId, lessonId) => await fetchAPI('/progress/complete', 'POST', {

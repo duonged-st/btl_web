@@ -37,7 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // Gắn sự kiện đăng xuất
             const logoutBtn = document.getElementById('btn-logout');
             if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
+                logoutBtn.addEventListener('click', async () => {
+                    try {
+                        if (typeof API !== 'undefined' && API.logout) {
+                            await API.logout();
+                        }
+                    } catch (e) {
+                        console.error('Lỗi khi gọi API logout:', e);
+                    }
                     localStorage.removeItem('userId');
                     localStorage.removeItem('name');
                     localStorage.removeItem('username');

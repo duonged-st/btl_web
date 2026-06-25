@@ -42,21 +42,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (response.success && response.data) {
             const lessons = response.data;
             lessonPreviewList.innerHTML = '';
-            
             if (lessons.length === 0) {
                 lessonPreviewList.innerHTML = '<p class="loading-text" style="font-size: 0.875rem;">Đề cương khóa học đang được cập nhật.</p>';
                 return;
             }
-
             // Sắp xếp bài giảng theo thứ tự bài học
             lessons.sort((a, b) => (a.lesson_order || 0) - (b.lesson_order || 0));
-
             lessons.forEach((lesson, index) => {
                 const item = document.createElement('button');
                 item.type = 'button';
                 item.className = 'lesson-preview-item';
                 item.setAttribute('aria-pressed', 'false');
-
                 item.innerHTML = `
                     <span class="lesson-preview-main">
                         <span class="lesson-preview-number">${index + 1}</span>
@@ -64,7 +60,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </span>
                     <span class="lesson-preview-status">Chọn bài</span>
                 `;
-
                 // [THÊM MỚI] Khi bấm vào một bài:
                 // 1. Bỏ trạng thái được chọn ở tất cả bài khác.
                 // 2. Đánh dấu bài vừa bấm là bài đang được chọn.
@@ -72,11 +67,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 item.addEventListener('click', () => {
                     const allLessonItems =
                         lessonPreviewList.querySelectorAll('.lesson-preview-item');
-
                     allLessonItems.forEach(lessonItem => {
                         lessonItem.classList.remove('selected');
                         lessonItem.setAttribute('aria-pressed', 'false');
-
                         const status =
                             lessonItem.querySelector('.lesson-preview-status');
 

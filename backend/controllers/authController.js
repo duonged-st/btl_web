@@ -26,6 +26,9 @@ const authController = {
         return res.status(500).json({ message: 'Đăng ký thất bại. Vui lòng thử lại sau.' });
       }
 
+      // Lưu session
+      req.session.userId = insertId;
+
       res.status(201).json({
         message: 'Đăng ký tài khoản thành công.',
         user: { id: insertId, name, username }
@@ -55,6 +58,9 @@ const authController = {
         return res.status(400).json({ message: 'Tên đăng nhập hoặc mật khẩu không đúng.' });
       }
 
+      // Lưu session
+      req.session.userId = user.id;
+
       res.json({
         message: 'Đăng nhập thành công.',
         user: { id: user.id, name: user.name, username: user.username }
@@ -63,6 +69,17 @@ const authController = {
       console.error('Lỗi đăng nhập:', error);
       res.status(500).json({ message: 'Lỗi máy chủ khi đăng nhập.' });
     }
+  },
+
+  // POST /api/auth/logout
+  logout: (req, res) => {
+    req.session.destroy(err => {
+      if (err) {
+        return res.status(500).json({ message: 'Lỗi khi đăng xuất.' });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ message: 'Đăng xuất thành công.' });
+    });
   },
 
   // GET /api/users/:id

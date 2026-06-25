@@ -4,7 +4,28 @@ const app = express();
 const port = 3000;
 app.use(express.json());
 const cors = require('cors');
-app.use(cors());
+const session = require('express-session');
+const { requireAuth } = require('./middleware/authMiddleware');
+
+// Cấu hình CORS động để cho phép gửi cookie từ Frontend
+app.use(cors({
+    origin: function (origin, callback) {
+        callback(null, origin || true);
+    },
+    credentials: true
+}));
+
+// Cấu hình Session
+app.use(session({
+    secret: 'btl-secret-key-12345',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false,
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000
+    }
+}));
 const courseController = require('./controllers/courseController');
 const enrollController = require('./controllers/enrollController');
 const lessonController = require('./controllers/lessonController');
@@ -66,15 +87,16 @@ app.get('/api/lessons/:id', lessonController.getLessonDetail);
 app.post('/api/lessons', lessonController.addLesson);
 app.delete('/api/lessons/:id', lessonController.deleteLesson);
 // Routes ghi danh
-app.post('/api/enroll', enrollController.enrollCourse);
-app.get('/api/enroll/user/:userId', enrollController.getEnrolledCourses);
+app.post('/api/enroll', requireAuth, enrollController.enrollCourse);
+app.get('/api/enroll/user/:userId', requireAuth, enrollController.getEnrolledCourses);
 // Routes xác thực & người dùng
 app.post('/api/auth/register', authController.register);
 app.post('/api/auth/login', authController.login);
-app.get('/api/users/:id', authController.getUserProfile);
+app.post('/api/auth/logout', authController.logout);
+app.get('/api/users/:id', requireAuth, authController.getUserProfile);
 // Routes tiến độ học tập
-app.get('/api/progress/:userId/:courseId', progressController.getProgress);
-app.post('/api/progress/complete', progressController.markCompleted);
+app.get('/api/progress/:userId/:courseId', requireAuth, progressController.getProgress);
+app.post('/api/progress/complete', requireAuth, progressController.markCompleted);
 
 const fs = require('fs');
 const path = require('path');
