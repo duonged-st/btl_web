@@ -1,10 +1,10 @@
 const { pool } = require('../config/db'); 
 const UserModel = {
   // 1. Hàm tạo người dùng mới (Dùng khi đăng ký tài khoản)
-  createUser: async (name, username, password) => {
+  createUser: async (username, password) => {
     try {
-      const query = 'INSERT INTO Users (name, username, password) VALUES (?, ?, ?)';
-      const [result] = await pool.execute(query, [name, username, password]);
+      const query = 'INSERT INTO Users (username, password) VALUES (?, ?)';
+      const [result] = await pool.execute(query, [username, password]);
       return result.insertId; 
     } catch (error) {
       console.error('Error creating user:', error);
@@ -23,7 +23,7 @@ const UserModel = {
   // 3. Hàm lấy thông tin người dùng bằng ID (Dùng để hiển thị profile hoặc check quyền mua khóa học)
   getUserById: async (id) => {
     try {
-      const query = 'SELECT id, name, username, role FROM Users WHERE id = ?';
+      const query = 'SELECT id, username, role FROM Users WHERE id = ?';
       const [rows] = await pool.execute(query, [id]);      
       return rows[0];
     } catch (error) {

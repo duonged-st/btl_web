@@ -20,7 +20,6 @@ const lessonController = {
       res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách bài học.' });
     }
   },
-
   // 3. Lấy chi tiết một bài học cụ thể (để lấy video_url hiển thị lên trình phát)
   // GET /api/lessons/:id
   getLessonDetail: async (req, res) => {
@@ -39,7 +38,6 @@ const lessonController = {
       res.status(500).json({ message: 'Lỗi máy chủ khi lấy chi tiết bài học.' });
     }
   },
-
   // 4. Thêm bài học (video) mới vào khóa học
   // POST /api/lessons
   addLesson: async (req, res) => {
@@ -55,7 +53,6 @@ const lessonController = {
       res.status(500).json({ message: 'Lỗi máy chủ khi thêm bài học.' });
     }
   },
-
   // 5. Xóa bài học
   // DELETE /api/lessons/:id
   deleteLesson: async (req, res) => {

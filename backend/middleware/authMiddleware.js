@@ -4,4 +4,10 @@ const requireAuth = (req, res, next) => {
     }
     next();
 };
+const requireAdmin = (req, res, next) => {
+    if (!req.session || !req.session.user || req.session.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Bạn không có quyền quản trị.' });
+    }
+    next();
+};
 module.exports = { requireAuth };

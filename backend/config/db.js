@@ -14,7 +14,6 @@ async function setupDatabase() {
     const createUsersTable = `
       CREATE TABLE IF NOT EXISTS Users (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
         username VARCHAR(100) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
         role VARCHAR(20) DEFAULT 'user'
@@ -68,21 +67,18 @@ async function setupDatabase() {
     await pool.execute(createLessonsTable);
     await pool.execute(createEnrollmentsTable);
     await pool.execute(createLessonProgressTable);
-    
     // Kiểm tra và thêm cột video_url nếu chưa có
     const [columns] = await pool.execute("SHOW COLUMNS FROM Lessons LIKE 'video_url'");
     if (columns.length === 0) {
       await pool.execute("ALTER TABLE Lessons ADD COLUMN video_url VARCHAR(255)");
       console.log("Đã thêm cột video_url vào bảng Lessons.");
     }
-    
     // Kiểm tra và thêm cột role vào bảng Users nếu chưa có
     const [userCols] = await pool.execute("SHOW COLUMNS FROM Users LIKE 'role'");
     if (userCols.length === 0) {
       await pool.execute("ALTER TABLE Users ADD COLUMN role VARCHAR(20) DEFAULT 'user'");
       console.log("Đã thêm cột role vào bảng Users.");
     }
-
     console.log("Khoi tao cac bang thanh cong.");
   } catch (error) {
     console.error("Loi khi tao bang:", error.message);

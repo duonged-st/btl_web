@@ -1,16 +1,13 @@
 const ProgressModel = require('../model/Progress');
-
 const progressController = {
   // GET /api/progress/:courseId
   getProgress: async (req, res) => {
     try {
       const userId = req.session.userId;
       const courseId = Number(req.params.courseId);
-
       if (!Number.isInteger(courseId) || courseId <= 0) {
         return res.status(400).json({ message: 'Dữ liệu không hợp lệ.' });
       }
-
       const completedLessons = await ProgressModel.getProgressByCourse(userId, courseId);
       res.json(completedLessons);
     } catch (error) {
@@ -21,21 +18,17 @@ const progressController = {
       res.status(500).json({ message: 'Lỗi máy chủ khi lấy tiến độ học tập.' });
     }
   },
-
   // POST /api/progress/complete
   markCompleted: async (req, res) => {
     try {
       let { course_id, lesson_id } = req.body;
       const user_id = req.session.userId;
-
       course_id = Number(course_id);
       lesson_id = Number(lesson_id);
-
       if (!Number.isInteger(course_id) || course_id <= 0 || 
           !Number.isInteger(lesson_id) || lesson_id <= 0) {
         return res.status(400).json({ message: 'Dữ liệu không hợp lệ (course_id, lesson_id).' });
       }
-
       await ProgressModel.markLessonCompleted(user_id, course_id, lesson_id);
       res.json({ message: 'Đã đánh dấu hoàn thành bài học.' });
     } catch (error) {
@@ -47,5 +40,4 @@ const progressController = {
     }
   }
 };
-
 module.exports = progressController;

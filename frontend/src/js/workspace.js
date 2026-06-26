@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let allLessons = [];
     let currentLessonId = null;
     let completedLessonIds = [];
-    // Hàm tiện ích: Chuyển đổi link YouTube sang dạng embed
+    // Hàm tiện ích: Chuyển đổi link YouTube thường sang dạng thẻ nhúng (embed) để chạy được video.
     function getYouTubeEmbedUrl(url) {
         if (!url) return '';
         let videoId = '';
@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
     }
     // 2. Tải thông tin khóa học
+    // Lấy tên khóa học hiện tại để hiển thị trên thanh trên cùng.
     async function loadCourseInfo() {
         const response = await API.getCourseDetail(courseId);
         if (response.success && response.data) {
@@ -73,6 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     // 3. Tải tiến độ học tập
+    // Gọi API để xem người dùng đã học xong những bài nào trong khóa này.
     async function loadProgress() {
         const response = await API.getLessonProgress(courseId);
         if (response.success) {
@@ -91,6 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     // 4. Tải danh sách bài học và hiển thị
+    // Lấy toàn bộ bài học và tự động phát bài học đầu tiên (hoặc bài chưa học).
     async function loadLessons() {
         const response = await API.getLessons(courseId);
         if (response.success && response.data) {
@@ -127,6 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     // 5. Hiển thị danh sách bài học trên sidebar
+    // Vẽ danh sách bài học ra thanh menu bên trái.
     function renderLessons() {
         lessonListContainer.innerHTML = '';
         allLessons.forEach((lesson, index) => {
@@ -150,6 +154,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
     // 6. Phát một bài học cụ thể
+    // Hàm xử lý phát video dựa vào ID bài học được bấm.
     async function playLesson(lessonId) {
         currentLessonId = lessonId;
         renderLessons(); // Cập nhật trạng thái active trên giao diện sidebar
@@ -183,12 +188,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     // 7. Cập nhật tiến độ text
+    // Cập nhật dòng chữ "Đã học x/y bài".
     function updateProgressText() {
         const currentCourseLessonIds = allLessons.map(l => Number(l.id));
         const completedCount = completedLessonIds.filter(id => currentCourseLessonIds.includes(id)).length;
         progressCountEl.textContent = `${completedCount}/${allLessons.length} bài`;
     }
     // 8. Cập nhật trạng thái các nút điều hướng
+    // Ẩn/hiện các nút Tới, Lui, Đánh dấu hoàn thành cho hợp lý.
     function updateButtonStates() {
         const currentIndex = allLessons.findIndex(l => l.id === currentLessonId);
         btnPrev.disabled = currentIndex <= 0;

@@ -1,5 +1,4 @@
 const EnrollmentModel = require('../model/Enrollment');
-
 const enrollController = {
   // 1. Đăng ký khóa học
   // POST /api/enroll
@@ -24,7 +23,6 @@ const enrollController = {
       res.status(500).json({ message: 'Lỗi máy chủ khi đăng ký khóa học.' });
     }
   },
-
   // 2. Lấy danh sách các khóa học mà một người dùng CỤ THỂ đã mua
   // GET /api/enroll/user
   getEnrolledCourses: async (req, res) => {
@@ -38,5 +36,4 @@ const enrollController = {
     }
   }
 };
-
 module.exports = enrollController;

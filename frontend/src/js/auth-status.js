@@ -1,3 +1,4 @@
+// Chạy tự động mỗi khi tải trang: Kiểm tra xem User đã đăng nhập hay chưa để đổi giao diện Header.
 document.addEventListener('DOMContentLoaded', async () => {
     let user = null;
     try {
@@ -34,12 +35,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (userNavContainer) {
         if (user) {
             // Trường hợp: ĐÃ đăng nhập
-            const avatarChar = user.name.charAt(0).toUpperCase();
+            const avatarChar = user.username.charAt(0).toUpperCase();
             userNavContainer.innerHTML = `
                 <div id="user-profile" class="user-profile">
                     <div id="user-avatar" class="user-avatar">${avatarChar}</div>
                     <div class="user-info-text">
-                        <div id="user-name" class="user-name">${user.name}</div>
+                        <div id="user-name" class="user-name">${user.username}</div>
                     </div>
                     <button id="btn-logout" class="button btn-logout">
                         Đăng xuất

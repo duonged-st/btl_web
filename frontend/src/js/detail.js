@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const lessonPreviewList = document.getElementById('lesson-preview-list');
     let courseData = null;
     // 1. Tải thông tin chi tiết khóa học
+    // Lấy thông tin chi tiết của khóa học từ server và in ra giao diện.
     async function fetchCourseDetails() {
         const response = await API.getCourseDetail(courseId);
         if (response.success && response.data) {
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     // 2. Tải danh sách bài giảng để hiển thị đề cương học tập
+    // Lấy danh sách các bài học (đề cương) của khóa này.
     async function fetchCurriculum() {
         const response = await API.getLessons(courseId);
         if (response.success && response.data) {
@@ -92,6 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     // 3. Hiển thị thông tin khóa học lên HTML
+    // Hàm phụ: Dán dữ liệu text, ảnh vào các thẻ HTML tương ứng.
     function renderCourseDetails() {
         detailTitle.textContent = courseData.title;
         detailDesc.textContent = courseData.description || 'Chưa có mô tả chi tiết cho khóa học này.';   
@@ -105,6 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     // 4. Kiểm tra trạng thái đăng ký và thiết lập hành động cho Button
+    // Xem User đã mua khóa này chưa để hiện nút "Vào học ngay" hay "Mua ngay".
     async function checkEnrollmentStatus() {
         let isEnrolled = false;
         if (userId) {
@@ -147,6 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     // 5. Đăng ký trực tiếp cho khóa học miễn phí
+    // Hàm xử lý khi bấm nút Đăng ký với khóa giá 0đ.
     async function enrollFreeCourse() {
         if (!userId) {
             window.location.href = 'auth/login.html';

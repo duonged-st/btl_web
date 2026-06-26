@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterPrice = document.getElementById('filter-price');
     let allCourses = [];
     // 2. Hàm gọi API và hiển thị dữ liệu
+    // Gọi API lấy danh sách khóa học và hiển thị lên màn hình.
     async function fetchAndRenderCourses() {
         loadingState.classList.remove('hidden');
         courseGrid.style.display = 'none';
@@ -23,13 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(response.error || "Không có dữ liệu khóa học");
         }
     }
-    // Hàm vẽ HTML cho từng khóa học
+    // Hàm vẽ HTML cho từng khóa học (Dùng biến JS truyền vào HTML template)
     function renderCourses(courses) {
         courseGrid.innerHTML = '';
         courses.forEach(course => {
             const courseCard = document.createElement('div');
             courseCard.className = 'course-card';
-            // [CHỈNH SỬA GIAO DIỆN] Giữ nguyên dữ liệu, chỉ thêm class để thẻ đẹp và dễ đọc hơn
             const formattedPrice = course.price === 0
                 ? 'Miễn phí'
                 : Number(course.price).toLocaleString('vi-VN') + ' đ';

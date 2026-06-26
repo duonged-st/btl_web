@@ -27,7 +27,6 @@ const courseController = {
       res.status(500).json({ message: 'Lỗi máy chủ khi lấy chi tiết khóa học.' });
     }
   },
-
   // 3. Thêm khóa học mới
   // POST /api/courses
   createCourse: async (req, res) => {
@@ -60,7 +59,6 @@ const courseController = {
       res.status(500).json({ message: 'Lỗi máy chủ khi cập nhật khóa học.' });
     }
   },
-
   // 5. Xóa khóa học
   // DELETE /api/courses/:id
   deleteCourse: async (req, res) => {

@@ -4,17 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Không tìm thấy form đăng ký (#register-form)');
         return;
     }
+    // Lắng nghe sự kiện Submit form (bấm nút Đăng ký) để gọi API gửi lên Server.
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const nameInput = document.getElementById('name');
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         const confirmPasswordInput = document.getElementById('confirm-password');
-        const name = nameInput.value.trim();
         const username = usernameInput.value.trim();
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;
-        if (!name || !username || !password || !confirmPassword) {
+        if (!username || !password || !confirmPassword) {
             alert('Vui lòng điền đầy đủ các thông tin yêu cầu.');
             return;
         }
@@ -28,14 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // Vô hiệu hóa form và hiển thị trạng thái đang xử lý
         const submitBtn = registerForm.querySelector('button[type="submit"]');
+        // Lưu lại nội dung cũ của nút submit
         const originalText = submitBtn.textContent;
         submitBtn.disabled = true;
         submitBtn.textContent = 'Đang đăng ký tài khoản...';
         try {
-            const response = await API.register(name, username, password);
+            const response = await API.register(username, password);
             if (response.success && response.data && response.data.user) {
                 const user = response.data.user;
-                // Không cần lưu localStorage nữa vì đã dùng Session 100%
                 alert('Đăng ký tài khoản thành công!');
                 // Chuyển hướng về trang chủ
                 window.location.href = '../index.html';

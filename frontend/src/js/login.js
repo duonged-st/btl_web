@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Không tìm thấy form đăng nhập (#login-form)');
         return;
     }
+    // Lắng nghe sự kiện Submit form để gọi API gửi lên Server.
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const usernameInput = document.getElementById('username');

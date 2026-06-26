@@ -1,6 +1,8 @@
 // 1. CẤU HÌNH CƠ BẢN (CONFIGURATION)
 const API_BASE_URL = 'http://localhost:3000/api';
+
 // 2. HÀM LÕI XỬ LÝ FETCH (CORE FETCH WRAPPER)
+// Hàm tiện ích: Tự động gửi HTTP Request lên Server (tự động đính kèm Cookie đăng nhập).
 async function fetchAPI(endpoint, method = 'GET', body = null) {
     const options = {
         method: method,
@@ -25,6 +27,7 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
     }
 }
 // 3. CÁC HÀM GIAO TIẾP NGHIỆP VỤ (API ENDPOINTS)
+// Đối tượng API chứa các hàm gọi lên Server cho từng tính năng.
 const API = {
     // --- CHỨC NĂNG 1: TRANG CHỦ DANH MỤC ---
     getCourses: async () => await fetchAPI('/courses'),
@@ -46,8 +49,7 @@ const API = {
         username: username,
         password: password
     }),
-    register: async (name, username, password) => await fetchAPI('/auth/register', 'POST', {
-        name: name,
+    register: async (username, password) => await fetchAPI('/auth/register', 'POST', {
         username: username,
         password: password
     }),
@@ -59,7 +61,6 @@ const API = {
         lesson_id: lessonId
     })
 };
-
 // 4. TIỆN ÍCH UI CHUNG
 const UIUtils = {
     showCourseSelectionModal: (courses, baseUrl, title = 'Vui lòng chọn một khóa học') => {
