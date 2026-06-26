@@ -23,7 +23,7 @@ const UserModel = {
   // 3. Hàm lấy thông tin người dùng bằng ID (Dùng để hiển thị profile hoặc check quyền mua khóa học)
   getUserById: async (id) => {
     try {
-      const query = 'SELECT id, name, username FROM Users WHERE id = ?';
+      const query = 'SELECT id, name, username, role FROM Users WHERE id = ?';
       const [rows] = await pool.execute(query, [id]);      
       return rows[0];
     } catch (error) {

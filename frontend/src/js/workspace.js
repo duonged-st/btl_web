@@ -2,13 +2,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     let courseIdParam = urlParams.get('id');
     
-    const storedUserId = Number(localStorage.getItem('userId'));
-    const userId = Number.isInteger(storedUserId) && storedUserId > 0 ? storedUserId : 1;
-
     let courseId = Number(courseIdParam);
 
     if (!Number.isInteger(courseId) || courseId <= 0) {
-        const enrollResponse = await API.getEnrolledCourses(userId);
+        const enrollResponse = await API.getEnrolledCourses();
         if (enrollResponse.success && enrollResponse.data && enrollResponse.data.length > 0) {
             UIUtils.showCourseSelectionModal(enrollResponse.data, 'learning.html', 'Vui lòng chọn khóa học bạn muốn học');
         } else {
@@ -20,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 1. Kiểm tra quyền học (người dùng đã đăng ký khóa học chưa)
     try {
-        const enrollResponse = await API.getEnrolledCourses(userId);
+        const enrollResponse = await API.getEnrolledCourses();
         if (enrollResponse.success && enrollResponse.data) {
             const isEnrolled = enrollResponse.data.some(course => Number(course.id) === courseId);
             if (!isEnrolled) {
@@ -86,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 3. Tải tiến độ học tập
     async function loadProgress() {
-        const response = await API.getLessonProgress(userId, courseId);
+        const response = await API.getLessonProgress(courseId);
         if (response.success) {
             completedLessonIds = response.data.map(id => Number(id));
             return true;
@@ -257,7 +254,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnMarkCompleted.disabled = true;
         btnMarkCompleted.textContent = 'Đang lưu...';
 
-        const response = await API.markLessonCompleted(userId, courseId, currentLessonId);
+        const response = await API.markLessonCompleted(courseId, currentLessonId);
         
         if (response.success) {
             if (!completedLessonIds.includes(Number(currentLessonId))) {

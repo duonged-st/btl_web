@@ -32,11 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.success && response.data && response.data.user) {
                 const user = response.data.user;
                 
-                // Lưu trạng thái đăng nhập vào localStorage
-                localStorage.setItem('userId', user.id);
-                localStorage.setItem('username', user.username);
-                localStorage.setItem('name', user.name);
-
+                // Không cần lưu localStorage nữa vì đã dùng Session 100%
                 alert('Đăng nhập thành công!');
                 // Quay lại trang chủ
                 window.location.href = '../index.html';

@@ -5,10 +5,11 @@ const enrollController = {
   // POST /api/enroll
   enrollCourse: async (req, res) => {
     try {
-      const { user_id, course_id } = req.body;
-      if (!user_id || !course_id) {
-        return res.status(400).json({ message: 'Thiếu thông tin user_id hoặc course_id.' });
-          }
+      const user_id = req.session.userId;
+      const { course_id } = req.body;
+      if (!course_id) {
+        return res.status(400).json({ message: 'Thiếu thông tin course_id.' });
+      }
       const isEnrolled = await EnrollmentModel.checkEnrollment(user_id, course_id);
       if (isEnrolled) {
         return res.status(400).json({ message: 'Học viên đã đăng ký khóa học này trước đó.' });
@@ -25,13 +26,10 @@ const enrollController = {
   },
 
   // 2. Lấy danh sách các khóa học mà một người dùng CỤ THỂ đã mua
-  // GET /api/enroll/user/:userId
+  // GET /api/enroll/user
   getEnrolledCourses: async (req, res) => {
     try {
-      const userId = Number(req.params.userId);
-      if (!Number.isInteger(userId) || userId <= 0) {
-        return res.status(400).json({ message: 'Mã người dùng không hợp lệ.' });
-      }
+      const userId = req.session.userId;
       const courses = await EnrollmentModel.getEnrolledCoursesByUser(userId);
       res.json(courses);
     } catch (error) {

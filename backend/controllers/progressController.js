@@ -1,13 +1,13 @@
 const ProgressModel = require('../model/Progress');
 
 const progressController = {
-  // GET /api/progress/:userId/:courseId
+  // GET /api/progress/:courseId
   getProgress: async (req, res) => {
     try {
-      const userId = Number(req.params.userId);
+      const userId = req.session.userId;
       const courseId = Number(req.params.courseId);
 
-      if (!Number.isInteger(userId) || userId <= 0 || !Number.isInteger(courseId) || courseId <= 0) {
+      if (!Number.isInteger(courseId) || courseId <= 0) {
         return res.status(400).json({ message: 'Dữ liệu không hợp lệ.' });
       }
 
@@ -25,16 +25,15 @@ const progressController = {
   // POST /api/progress/complete
   markCompleted: async (req, res) => {
     try {
-      let { user_id, course_id, lesson_id } = req.body;
+      let { course_id, lesson_id } = req.body;
+      const user_id = req.session.userId;
 
-      user_id = Number(user_id);
       course_id = Number(course_id);
       lesson_id = Number(lesson_id);
 
-      if (!Number.isInteger(user_id) || user_id <= 0 || 
-          !Number.isInteger(course_id) || course_id <= 0 || 
+      if (!Number.isInteger(course_id) || course_id <= 0 || 
           !Number.isInteger(lesson_id) || lesson_id <= 0) {
-        return res.status(400).json({ message: 'Dữ liệu không hợp lệ (user_id, course_id, lesson_id).' });
+        return res.status(400).json({ message: 'Dữ liệu không hợp lệ (course_id, lesson_id).' });
       }
 
       await ProgressModel.markLessonCompleted(user_id, course_id, lesson_id);

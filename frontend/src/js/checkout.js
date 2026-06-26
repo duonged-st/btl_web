@@ -12,8 +12,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Lấy userId thực tế từ localStorage của học viên
-    const userId = localStorage.getItem('userId');
+    // Gọi API.getMe() để lấy userId thay vì localStorage
+    let userId = null;
+    try {
+        const userRes = await API.getMe();
+        if (userRes.success && userRes.data) {
+            userId = userRes.data.id;
+        }
+    } catch (e) {}
+
     if (!userId) {
         window.location.href = 'auth/login.html';
         return;
@@ -62,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnConfirmPayment.textContent = 'Đang kiểm tra giao dịch...';
 
         // Gọi API enroll để chính thức ghi nhận người dùng đã đăng ký khóa học
-        const response = await API.enrollCourse(userId, courseId);
+        const response = await API.enrollCourse(courseId);
         
         btnConfirmPayment.disabled = false;
         btnConfirmPayment.textContent = 'Tôi đã hoàn thành thanh toán';

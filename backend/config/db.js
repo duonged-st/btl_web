@@ -16,7 +16,8 @@ async function setupDatabase() {
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
         username VARCHAR(100) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL
+        password VARCHAR(255) NOT NULL,
+        role VARCHAR(20) DEFAULT 'user'
       )
     `;
     const createCoursesTable = `
@@ -73,6 +74,13 @@ async function setupDatabase() {
     if (columns.length === 0) {
       await pool.execute("ALTER TABLE Lessons ADD COLUMN video_url VARCHAR(255)");
       console.log("Đã thêm cột video_url vào bảng Lessons.");
+    }
+    
+    // Kiểm tra và thêm cột role vào bảng Users nếu chưa có
+    const [userCols] = await pool.execute("SHOW COLUMNS FROM Users LIKE 'role'");
+    if (userCols.length === 0) {
+      await pool.execute("ALTER TABLE Users ADD COLUMN role VARCHAR(20) DEFAULT 'user'");
+      console.log("Đã thêm cột role vào bảng Users.");
     }
 
     console.log("Khoi tao cac bang thanh cong.");

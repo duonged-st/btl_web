@@ -35,10 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await API.register(name, username, password);
             if (response.success && response.data && response.data.user) {
                 const user = response.data.user;
-                // Tự động đăng nhập người dùng sau khi đăng ký thành công
-                localStorage.setItem('userId', user.id);
-                localStorage.setItem('username', user.username);
-                localStorage.setItem('name', user.name);
+                // Không cần lưu localStorage nữa vì đã dùng Session 100%
                 alert('Đăng ký tài khoản thành công!');
                 // Chuyển hướng về trang chủ
                 window.location.href = '../index.html';

@@ -39,42 +39,7 @@ app.get('/api/setup-db', async (req, res) => {
     res.status(500).json({ message: "Lỗi khi khởi tạo CSDL.", error: error.message });
   }
 });
-// Route seed dữ liệu mẫu (chỉ chạy một lần để khởi tạo)
-app.get('/api/seed', async (req, res) => {
-  try {
-    const [existing] = await pool.execute("SELECT id FROM Courses WHERE title = 'Thiết kế và lập trình web'");
-    if (existing.length > 0) {
-      return res.json({ message: 'Du lieu mau da ton tai, khong can seed lai.' });
-    }
-    const [courseResult] = await pool.execute(
-      "INSERT INTO Courses (title, description, price, thumbnail) VALUES (?, ?, ?, ?)",
-      [
-        'Thiết kế và lập trình web',
-        'Khóa học miễn phí giúp người mới học cách xây dựng một website hoàn chỉnh từ HTML, CSS và JavaScript.',
-        0,
-        'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200'
-      ]
-    );
-    const courseId = courseResult.insertId;
-    const lessons = [
-      { order: 1, title: 'Tổng quan về thiết kế và lập trình web', url: 'https://www.youtube.com/watch?v=qz0aGYrrlhU' },
-      { order: 2, title: 'Xây dựng cấu trúc trang web bằng HTML', url: 'https://www.youtube.com/watch?v=UB1O30fR-EE' },
-      { order: 3, title: 'Trang trí giao diện bằng CSS', url: 'https://www.youtube.com/watch?v=yfoY53QXEnI' },
-      { order: 4, title: 'Thiết kế responsive cho điện thoại và máy tính', url: 'https://www.youtube.com/watch?v=srvUrASNj0s' },
-      { order: 5, title: 'Tạo tương tác bằng JavaScript', url: 'https://www.youtube.com/watch?v=W6NZfCO5SIk' }
-    ];
-    for (const lesson of lessons) {
-      await pool.execute(
-        "INSERT INTO Lessons (course_id, title, video_url, lesson_order) VALUES (?, ?, ?, ?)",
-        [courseId, lesson.title, lesson.url, lesson.order]
-      );
-    }
-    res.json({ message: 'Seed du lieu mau thanh cong.', courseId });
-  } catch (error) {
-    console.error('Loi seed:', error);
-    res.status(500).json({ message: 'Loi khi seed du lieu.' });
-  }
-});
+
 // Routes khóa học & bài học
 app.get('/api/courses', courseController.getCourses);
 app.get('/api/courses/:id', courseController.getCourseDetail);
@@ -88,14 +53,15 @@ app.post('/api/lessons', lessonController.addLesson);
 app.delete('/api/lessons/:id', lessonController.deleteLesson);
 // Routes ghi danh
 app.post('/api/enroll', requireAuth, enrollController.enrollCourse);
-app.get('/api/enroll/user/:userId', requireAuth, enrollController.getEnrolledCourses);
+app.get('/api/enroll/user', requireAuth, enrollController.getEnrolledCourses);
 // Routes xác thực & người dùng
 app.post('/api/auth/register', authController.register);
 app.post('/api/auth/login', authController.login);
 app.post('/api/auth/logout', authController.logout);
+app.get('/api/auth/me', requireAuth, authController.getMe);
 app.get('/api/users/:id', requireAuth, authController.getUserProfile);
 // Routes tiến độ học tập
-app.get('/api/progress/:userId/:courseId', requireAuth, progressController.getProgress);
+app.get('/api/progress/:courseId', requireAuth, progressController.getProgress);
 app.post('/api/progress/complete', requireAuth, progressController.markCompleted);
 
 const fs = require('fs');

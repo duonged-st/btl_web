@@ -30,8 +30,7 @@ const API = {
     getCourses: async () => await fetchAPI('/courses'),
     // --- CHỨC NĂNG 2: CHI TIẾT KHÓA HỌC & GHI DANH ---
     getCourseDetail: async (courseId) => await fetchAPI(`/courses/${courseId}`),
-    enrollCourse: async (userId, courseId) => await fetchAPI('/enroll', 'POST', {
-        user_id: userId,
+    enrollCourse: async (courseId) => await fetchAPI('/enroll', 'POST', {
         course_id: courseId
     }),
     // --- CHỨC NĂNG 3: KHÔNG GIAN HỌC TẬP ---
@@ -39,9 +38,10 @@ const API = {
     getLessonDetail: async (lessonId) => await fetchAPI(`/lessons/${lessonId}`, 'GET'),
     // --- CHỨC NĂNG 4: NGƯỜI DÙNG & HỒ SƠ ---
     getUserProfile: async (userId) => await fetchAPI(`/users/${userId}`),
-    getUserEnrolledCourses: async (userId) => await fetchAPI(`/enroll/user/${userId}`),
-    getEnrolledCourses: async (userId) => await fetchAPI(`/enroll/user/${userId}`),
+    getUserEnrolledCourses: async () => await fetchAPI(`/enroll/user`),
+    getEnrolledCourses: async () => await fetchAPI(`/enroll/user`),
     // --- CHỨC NĂNG 5: XÁC THỰC (AUTHENTICATION) ---
+    getMe: async () => await fetchAPI('/auth/me'),
     login: async (username, password) => await fetchAPI('/auth/login', 'POST', {
         username: username,
         password: password
@@ -53,9 +53,8 @@ const API = {
     }),
     logout: async () => await fetchAPI('/auth/logout', 'POST'),
     // --- CHỨC NĂNG 6: TIẾN ĐỘ HỌC TẬP ---
-    getLessonProgress: async (userId, courseId) => await fetchAPI(`/progress/${userId}/${courseId}`, 'GET'),
-    markLessonCompleted: async (userId, courseId, lessonId) => await fetchAPI('/progress/complete', 'POST', {
-        user_id: userId,
+    getLessonProgress: async (courseId) => await fetchAPI(`/progress/${courseId}`, 'GET'),
+    markLessonCompleted: async (courseId, lessonId) => await fetchAPI('/progress/complete', 'POST', {
         course_id: courseId,
         lesson_id: lessonId
     })

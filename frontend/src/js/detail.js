@@ -11,8 +11,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         return;
     }
-    // Lấy userId của học viên từ localStorage
-    const userId = localStorage.getItem('userId');
+    // Lấy userId thông qua Session Backend
+    let userId = null;
+    try {
+        const userRes = await API.getMe();
+        if (userRes.success && userRes.data) {
+            userId = userRes.data.id;
+        }
+    } catch (e) {}
 
     const detailTitle = document.getElementById('detail-title');
     const detailDesc = document.getElementById('detail-desc');
@@ -120,7 +126,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnAction.disabled = true;
             btnAction.textContent = 'Đang kiểm tra...';
 
-            const response = await API.getEnrolledCourses(userId);
+            const response = await API.getEnrolledCourses();
             btnAction.disabled = false;
 
             if (response.success && response.data) {
@@ -169,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnAction.disabled = true;
         btnAction.textContent = 'Đang xử lý đăng ký...';
 
-        const response = await API.enrollCourse(userId, courseId);
+        const response = await API.enrollCourse(courseId);
         btnAction.disabled = false;
 
         if (response.success) {
