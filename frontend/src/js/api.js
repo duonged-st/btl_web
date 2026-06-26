@@ -66,20 +66,16 @@ const UIUtils = {
         const modal = document.createElement('div');
         modal.className = 'modal active';
         modal.style.zIndex = '9999';
-
         const content = document.createElement('div');
         content.className = 'modal-content';
         content.style.width = '500px';
-
         const header = document.createElement('h3');
         header.textContent = title;
         header.style.marginBottom = '20px';
-
         const list = document.createElement('ul');
         list.className = 'lesson-list';
         list.style.maxHeight = '60vh';
         list.style.overflowY = 'auto';
-
         courses.forEach(c => {
             const li = document.createElement('li');
             li.className = 'lesson-item';
@@ -87,9 +83,7 @@ const UIUtils = {
             li.style.transition = 'background-color 0.2s';
             li.onmouseover = () => li.style.backgroundColor = 'var(--bg-gray-50)';
             li.onmouseout = () => li.style.backgroundColor = '';
-            
             const priceText = c.price !== undefined ? (c.price === 0 ? 'Miễn phí' : c.price.toLocaleString('vi-VN') + ' đ') : '';
-            
             li.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 15px; width: 100%;">
                     ${c.thumbnail ? `<img src="${c.thumbnail}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">` : ''}
@@ -104,10 +98,8 @@ const UIUtils = {
             };
             list.appendChild(li);
         });
-
         content.appendChild(header);
         content.appendChild(list);
-        
         const closeBtn = document.createElement('button');
         closeBtn.className = 'btn-cancel';
         closeBtn.textContent = 'Quay về trang chủ';
@@ -115,7 +107,6 @@ const UIUtils = {
         closeBtn.style.width = '100%';
         closeBtn.onclick = () => window.location.href = 'index.html';
         content.appendChild(closeBtn);
-
         modal.appendChild(content);
         document.body.appendChild(modal);
     }

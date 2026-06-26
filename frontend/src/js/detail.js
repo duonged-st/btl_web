@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     let courseId = urlParams.get('id');
-
     if (!courseId) {
         const coursesRes = await API.getCourses();
         if (coursesRes.success && coursesRes.data && coursesRes.data.length > 0) {
@@ -19,16 +18,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             userId = userRes.data.id;
         }
     } catch (e) {}
-
     const detailTitle = document.getElementById('detail-title');
     const detailDesc = document.getElementById('detail-desc');
     const detailThumbnail = document.getElementById('detail-thumbnail');
     const detailPrice = document.getElementById('detail-price');
     const btnAction = document.getElementById('btn-action');
     const lessonPreviewList = document.getElementById('lesson-preview-list');
-
     let courseData = null;
-
     // 1. Tải thông tin chi tiết khóa học
     async function fetchCourseDetails() {
         const response = await API.getCourseDetail(courseId);
@@ -41,7 +37,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Lỗi tải dữ liệu khóa học.');
         }
     }
-
     // 2. Tải danh sách bài giảng để hiển thị đề cương học tập
     async function fetchCurriculum() {
         const response = await API.getLessons(courseId);
@@ -66,7 +61,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </span>
                     <span class="lesson-preview-status">Chọn bài</span>
                 `;
-                // [THÊM MỚI] Khi bấm vào một bài:
                 // 1. Bỏ trạng thái được chọn ở tất cả bài khác.
                 // 2. Đánh dấu bài vừa bấm là bài đang được chọn.
                 // 3. Đổi chữ "Chọn bài" thành "Đã chọn".
@@ -83,58 +77,46 @@ document.addEventListener('DOMContentLoaded', async () => {
                             status.textContent = 'Chọn bài';
                         }
                     });
-
                     item.classList.add('selected');
                     item.setAttribute('aria-pressed', 'true');
-
                     const selectedStatus =
                         item.querySelector('.lesson-preview-status');
-
                     if (selectedStatus) {
                         selectedStatus.textContent = 'Đã chọn ✓';
                     }
                 });
-
                 lessonPreviewList.appendChild(item);
             });
         } else {
             console.error('Không thể tải đề cương bài giảng:', response.error);
         }
     }
-
     // 3. Hiển thị thông tin khóa học lên HTML
     function renderCourseDetails() {
         detailTitle.textContent = courseData.title;
-        detailDesc.textContent = courseData.description || 'Chưa có mô tả chi tiết cho khóa học này.';
-        
+        detailDesc.textContent = courseData.description || 'Chưa có mô tả chi tiết cho khóa học này.';   
         if (courseData.thumbnail) {
             detailThumbnail.src = courseData.thumbnail;
         }
-
         if (courseData.price === 0) {
             detailPrice.textContent = 'Miễn phí';
         } else {
             detailPrice.textContent = courseData.price.toLocaleString('vi-VN') + ' đ';
         }
     }
-
     // 4. Kiểm tra trạng thái đăng ký và thiết lập hành động cho Button
     async function checkEnrollmentStatus() {
         let isEnrolled = false;
-
         if (userId) {
             btnAction.disabled = true;
             btnAction.textContent = 'Đang kiểm tra...';
-
             const response = await API.getEnrolledCourses();
             btnAction.disabled = false;
-
             if (response.success && response.data) {
                 // Kiểm tra xem ID khóa học này đã nằm trong danh sách đăng ký chưa
                 isEnrolled = response.data.some(course => course.id == courseId);
             }
         }
-
         if (isEnrolled) {
             // Trường hợp 1: Đã đăng ký rồi -> Vào học ngay
             btnAction.textContent = 'Vào học ngay';
@@ -164,20 +146,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     }
-
     // 5. Đăng ký trực tiếp cho khóa học miễn phí
     async function enrollFreeCourse() {
         if (!userId) {
             window.location.href = 'auth/login.html';
             return;
         }
-
         btnAction.disabled = true;
         btnAction.textContent = 'Đang xử lý đăng ký...';
-
         const response = await API.enrollCourse(courseId);
         btnAction.disabled = false;
-
         if (response.success) {
             alert('Đăng ký khóa học thành công! Chúc bạn học tập tốt.');
             window.location.href = `learning.html?id=${courseId}`;
@@ -186,7 +164,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnAction.textContent = 'Đăng ký học ngay (Miễn phí)';
         }
     }
-
     // Khởi chạy
     fetchCourseDetails();
     fetchCurriculum();

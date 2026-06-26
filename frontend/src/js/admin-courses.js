@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-add-course').addEventListener('click', () => {
         openCourseModal('add');
     });
-    
     document.getElementById('course-thumbnail').addEventListener('change', function() {
         const preview = document.getElementById('course-thumbnail-preview');
         if (this.value) {
@@ -16,11 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
             preview.style.display = 'none';
         }
     });
-
     document.getElementById('course-form').addEventListener('submit', handleCourseSubmit);
     document.getElementById('lesson-form').addEventListener('submit', handleLessonSubmit);
 });
-
 async function loadImagesDropdown() {
     try {
         const select = document.getElementById('course-thumbnail');
@@ -41,9 +38,7 @@ async function loadImagesDropdown() {
         console.error('Lỗi tải danh sách ảnh', e);
     }
 }
-
 // --- QUẢN LÝ KHÓA HỌC ---
-
 async function fetchCourses() {
     try {
         const response = await fetch(`${API_BASE_URL}/courses`);
@@ -59,12 +54,10 @@ async function fetchCourses() {
 function renderCourseTable(courses) {
     const tbody = document.getElementById('course-table-body');
     tbody.innerHTML = '';
-
     if (courses.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Chưa có khóa học nào.</td></tr>';
         return;
     }
-
     courses.forEach(course => {
         const priceText = course.price > 0 ? course.price.toLocaleString('vi-VN') + ' đ' : 'Miễn phí';
         const tr = document.createElement('tr');

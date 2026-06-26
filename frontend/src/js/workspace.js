@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     let courseIdParam = urlParams.get('id');
-    
     let courseId = Number(courseIdParam);
-
     if (!Number.isInteger(courseId) || courseId <= 0) {
         const enrollResponse = await API.getEnrolledCourses();
         if (enrollResponse.success && enrollResponse.data && enrollResponse.data.length > 0) {
@@ -14,7 +12,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         return;
     }
-
     // 1. Kiểm tra quyền học (người dùng đã đăng ký khóa học chưa)
     try {
         const enrollResponse = await API.getEnrolledCourses();
@@ -36,7 +33,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'index.html';
         return;
     }
-
     // Các phần tử DOM
     const courseTitleEl = document.getElementById('workspace-course-title');
     const mainVideoFrame = document.getElementById('main-video-frame');
@@ -45,15 +41,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const currentLessonMetaEl = document.getElementById('current-lesson-meta');
     const progressCountEl = document.getElementById('lesson-progress-count');
     const lessonListContainer = document.getElementById('workspace-lesson-list');
-
     const btnPrev = document.getElementById('btn-prev-lesson');
     const btnNext = document.getElementById('btn-next-lesson');
     const btnMarkCompleted = document.getElementById('btn-mark-completed');
-
     let allLessons = [];
     let currentLessonId = null;
     let completedLessonIds = [];
-
     // Hàm tiện ích: Chuyển đổi link YouTube sang dạng embed
     function getYouTubeEmbedUrl(url) {
         if (!url) return '';
@@ -67,7 +60,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
     }
-
     // 2. Tải thông tin khóa học
     async function loadCourseInfo() {
         const response = await API.getCourseDetail(courseId);
@@ -80,7 +72,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             return false;
         }
     }
-
     // 3. Tải tiến độ học tập
     async function loadProgress() {
         const response = await API.getLessonProgress(courseId);
@@ -99,7 +90,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     }
-
     // 4. Tải danh sách bài học và hiển thị
     async function loadLessons() {
         const response = await API.getLessons(courseId);
@@ -121,10 +111,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             // Sắp xếp bài học theo thứ tự lesson_order
             allLessons.sort((a, b) => (a.lesson_order || 0) - (b.lesson_order || 0));
-
             renderLessons();
             updateProgressText();
-
             // Tìm bài đang học gần nhất hoặc mở bài đầu tiên
             let startLessonId = allLessons[0].id;
             for (let i = 0; i < allLessons.length; i++) {
@@ -138,57 +126,45 @@ document.addEventListener('DOMContentLoaded', async () => {
             lessonListContainer.innerHTML = '<p class="lesson-list-message error">Lỗi tải bài học.</p>';
         }
     }
-
     // 5. Hiển thị danh sách bài học trên sidebar
     function renderLessons() {
         lessonListContainer.innerHTML = '';
         allLessons.forEach((lesson, index) => {
             const isCompleted = completedLessonIds.includes(Number(lesson.id));
             const isActive = lesson.id === currentLessonId;
-
             const btn = document.createElement('button');
             btn.className = `workspace-lesson-item ${isActive ? 'active-lesson' : ''} ${isCompleted ? 'completed' : ''}`;
-            
             const icon = isCompleted ? '✓' : '▶';
-
             const iconSpan = document.createElement('span');
             iconSpan.className = 'lesson-item-icon';
             iconSpan.textContent = icon;
-
             const titleSpan = document.createElement('span');
             titleSpan.className = 'lesson-item-title';
             titleSpan.textContent = `Bài ${index + 1}: ${lesson.title}`;
-
             btn.appendChild(iconSpan);
             btn.appendChild(titleSpan);
-
             btn.addEventListener('click', () => {
                 playLesson(lesson.id);
             });
-
             lessonListContainer.appendChild(btn);
         });
     }
-
     // 6. Phát một bài học cụ thể
     async function playLesson(lessonId) {
         currentLessonId = lessonId;
         renderLessons(); // Cập nhật trạng thái active trên giao diện sidebar
         updateButtonStates();
-
         currentLessonTitleEl.textContent = 'Đang tải bài giảng...';
         currentLessonMetaEl.textContent = `Bài 0/0`;
         mainVideoFrame.src = '';
         mainVideoFrame.classList.add('hidden');
         videoStatusMessage.classList.add('hidden');
-
         const response = await API.getLessonDetail(lessonId);
         if (response.success && response.data) {
             const lesson = response.data;
             currentLessonTitleEl.textContent = lesson.title;
             const currentIndex = allLessons.findIndex(l => l.id === currentLessonId);
             currentLessonMetaEl.textContent = `Bài ${currentIndex + 1}/${allLessons.length}`;
-            
             const embedUrl = getYouTubeEmbedUrl(lesson.video_url);
             if (embedUrl) {
                 mainVideoFrame.src = embedUrl;
@@ -206,21 +182,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnMarkCompleted.disabled = true;
         }
     }
-
     // 7. Cập nhật tiến độ text
     function updateProgressText() {
         const currentCourseLessonIds = allLessons.map(l => Number(l.id));
         const completedCount = completedLessonIds.filter(id => currentCourseLessonIds.includes(id)).length;
         progressCountEl.textContent = `${completedCount}/${allLessons.length} bài`;
     }
-
     // 8. Cập nhật trạng thái các nút điều hướng
     function updateButtonStates() {
         const currentIndex = allLessons.findIndex(l => l.id === currentLessonId);
-        
         btnPrev.disabled = currentIndex <= 0;
-        btnNext.disabled = currentIndex === -1 || currentIndex >= allLessons.length - 1;
-        
+        btnNext.disabled = currentIndex === -1 || currentIndex >= allLessons.length - 1;   
         const isCompleted = completedLessonIds.includes(Number(currentLessonId));
         if (isCompleted) {
             btnMarkCompleted.textContent = 'Đã hoàn thành';
@@ -232,7 +204,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnMarkCompleted.classList.add('btn-completed');
         }
     }
-
     // Sự kiện các nút
     btnPrev.addEventListener('click', () => {
         const currentIndex = allLessons.findIndex(l => l.id === currentLessonId);
@@ -240,22 +211,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             playLesson(allLessons[currentIndex - 1].id);
         }
     });
-
     btnNext.addEventListener('click', () => {
         const currentIndex = allLessons.findIndex(l => l.id === currentLessonId);
         if (currentIndex !== -1 && currentIndex < allLessons.length - 1) {
             playLesson(allLessons[currentIndex + 1].id);
         }
     });
-
     btnMarkCompleted.addEventListener('click', async () => {
         if (!currentLessonId) return;
-        
         btnMarkCompleted.disabled = true;
         btnMarkCompleted.textContent = 'Đang lưu...';
-
         const response = await API.markLessonCompleted(courseId, currentLessonId);
-        
         if (response.success) {
             if (!completedLessonIds.includes(Number(currentLessonId))) {
                 completedLessonIds.push(Number(currentLessonId));
@@ -269,13 +235,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnMarkCompleted.textContent = 'Đánh dấu đã học';
         }
     });
-
     // Bắt đầu luồng
     const courseLoaded = await loadCourseInfo();
     if (!courseLoaded) return;
-
     const progressLoaded = await loadProgress();
     if (!progressLoaded) return;
-
     await loadLessons();
 });

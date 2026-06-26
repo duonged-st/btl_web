@@ -10,20 +10,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (e) {
         console.error('Chưa đăng nhập hoặc session hết hạn');
     }
-
     // Xác định xem trang hiện tại có ở trong thư mục con hay không
     const isSubFolder = window.location.pathname.includes('/auth/');
     // Đường dẫn tương đối dựa theo cấu trúc thư mục
     const loginPath = isSubFolder ? 'login.html' : 'auth/login.html';
     const registerPath = isSubFolder ? 'register.html' : 'auth/register.html';
     const homePath = isSubFolder ? '../index.html' : 'index.html';
-    
     // Gắn thông tin người dùng vào biến toàn cục để các JS khác có thể dùng
     window.currentUser = user;
-
     // Phát đi sự kiện báo hiệu rằng việc xác thực đã xong
     window.dispatchEvent(new Event('authStatusReady'));
-
     // 1. Kiểm tra quyền truy cập các trang riêng tư (Route Guard)
     const isProtectedPage = 
         window.location.pathname.endsWith('learning.html') || 

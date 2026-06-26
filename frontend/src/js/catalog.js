@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const formattedPrice = course.price === 0
                 ? 'Miễn phí'
                 : Number(course.price).toLocaleString('vi-VN') + ' đ';
-
             courseCard.innerHTML = `
                 <div class="course-thumbnail-wrapper">
                     <img
@@ -45,13 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${formattedPrice}
                     </span>
                 </div>
-
                 <div class="course-info">
                     <h3 class="course-title">${course.title}</h3>
                     <p class="course-desc">
                         ${course.description || 'Khóa học giúp bạn xây dựng kiến thức và kỹ năng thực tế.'}
                     </p>
-
                     <div class="course-footer course-footer-single">
                         <button
                             class="btn-course-detail"
