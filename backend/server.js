@@ -4,7 +4,7 @@ const session = require('express-session');
 const fs = require('fs');
 const path = require('path');
 const { setupDatabase, pool } = require('./config/db');
-const { requireAuth } = require('./middleware/authMiddleware');
+const { requireAuth, requireAdmin } = require('./middleware/authMiddleware');
 const courseController = require('./controllers/courseController');
 const enrollController = require('./controllers/enrollController');
 const lessonController = require('./controllers/lessonController');
@@ -42,13 +42,13 @@ app.get('/api/setup-db', async (req, res) => {
 // Routes khóa học & bài học
 app.get('/api/courses', courseController.getCourses);
 app.get('/api/courses/:id', courseController.getCourseDetail);
-app.post('/api/courses', courseController.createCourse);
-app.put('/api/courses/:id', courseController.updateCourse);
-app.delete('/api/courses/:id', courseController.deleteCourse);
+app.post('/api/courses', requireAuth, requireAdmin, courseController.createCourse);
+app.put('/api/courses/:id', requireAuth, requireAdmin, courseController.updateCourse);
+app.delete('/api/courses/:id', requireAuth, requireAdmin, courseController.deleteCourse);
 app.get('/api/courses/:id/lessons', lessonController.getLessons);
 app.get('/api/lessons/:id', lessonController.getLessonDetail);
-app.post('/api/lessons', lessonController.addLesson);
-app.delete('/api/lessons/:id', lessonController.deleteLesson);
+app.post('/api/lessons', requireAuth, requireAdmin, lessonController.addLesson);
+app.delete('/api/lessons/:id', requireAuth, requireAdmin, lessonController.deleteLesson);
 // Routes ghi danh
 app.post('/api/enroll', requireAuth, enrollController.enrollCourse);
 app.get('/api/enroll/user', requireAuth, enrollController.getEnrolledCourses);

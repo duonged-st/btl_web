@@ -22,6 +22,7 @@ const authController = {
       }
       // Lưu session
       req.session.userId = insertId;
+      req.session.userRole = 'user';
       res.status(201).json({
         message: 'Đăng ký tài khoản thành công.',
         user: { id: insertId, username, role: 'user' }
@@ -48,6 +49,7 @@ const authController = {
       }
       // Lưu session
       req.session.userId = user.id;
+      req.session.userRole = user.role;
       res.json({
         message: 'Đăng nhập thành công.',user: { id: user.id, username: user.username, role: user.role }});
     } catch (error) {
