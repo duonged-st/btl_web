@@ -75,6 +75,7 @@ app.get('/api/images', async (req, res) => {
     res.status(500).json({ success: false, message: 'Lỗi đọc danh sách ảnh' });
   }
 });
+app.use(express.static(path.join(__dirname, '../frontend/src')));
 app.listen(port, () => {
   console.log(`Server dang chay tai http://localhost:${port}`);
 });
