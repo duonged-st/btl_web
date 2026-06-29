@@ -1,3 +1,16 @@
+/* ============================================================
+   GLOBAL.CSS — Hệ Thống Khóa Học IT (Nhóm 15)
+   Cấu trúc:
+   1. Base & Variables
+   2. Shared Components (Header, Button)
+   3. Course Catalog Page
+   4. Course Detail Page
+   5. Checkout Page
+   6. Learning Workspace Page
+   7. Authentication Pages
+   8. Admin Dashboard
+   9. Responsive
+   ============================================================ */
 /* 1. BASE CONFIGURATION & VARIABLES */
 
 :root {
@@ -7,14 +20,14 @@
   --border-gray-100: #f3f4f6;
   --text-gray-900: #111827;
   --text-gray-800: #1f2937;
+  --text-gray-600: #4b5563;
   --text-gray-500: #6b7280;
+  --blue-50: #eff6ff;
+  --bg-blue-50: #eff6ff;
   --blue-100: #dbeafe;
   --blue-600: #2563eb;
   --blue-700: #1d4ed8;
   --green-500: #22c55e;
-  --blue-50: #eff6ff;
-  --bg-blue-50: #eff6ff;
-  --text-gray-600: #4b5563;
 }
 
 * {
@@ -30,14 +43,13 @@ body {
   line-height: 1.5;
 }
 
-/* Các lớp tiện ích chung */
 .hidden {
   display: none !important;
 }
 
 @keyframes spin {
   from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  to   { transform: rotate(360deg); }
 }
 
 
@@ -91,6 +103,13 @@ body {
   letter-spacing: -0.025em;
 }
 
+/* Navigation chung */
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 /* Profile người dùng góc phải */
 .user-profile {
   display: flex;
@@ -117,13 +136,13 @@ body {
   display: none;
 }
 
-
 .user-name {
   font-weight: 700;
   font-size: 0.875rem;
   color: var(--text-gray-800);
 }
-/* Nút bấm (Button) */
+
+/* Nút bấm chung */
 .button {
   padding: 0.35rem 0.75rem;
   border: 1px solid var(--border-gray-200);
@@ -140,6 +159,61 @@ body {
   background-color: var(--blue-100);
   color: var(--blue-700);
 }
+
+/* Auth status nav buttons */
+.user-nav-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.button-login,
+.button-register {
+  font-size: 0.875rem;
+  padding: 0.35rem 0.75rem;
+}
+
+.button-register {
+  background-color: var(--blue-600);
+  color: white;
+  border-color: var(--blue-600);
+}
+
+.button-register:hover {
+  background-color: var(--blue-700);
+  color: white;
+}
+
+.btn-logout {
+  margin-left: 0.75rem;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+}
+
+/* Learning Workspace specific header */
+.workspace-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.workspace-user-navigation,
+.workspace-user-profile {
+  padding-left: 0;
+  border-left: none;
+}
+
+.text-muted {
+  color: var(--text-gray-500);
+  font-weight: normal;
+}
+
+.text-blue {
+  color: var(--blue-600);
+}
+
+
 /* 3. COURSE CATALOG PAGE */
 
 .main-content {
@@ -185,8 +259,6 @@ body {
   gap: 0.75rem;
 }
 
-
-
 .search-wrapper {
   flex: 1;
   position: relative;
@@ -202,9 +274,8 @@ body {
   align-items: center;
 }
 
-.search-input {
-  width: 100%;
-  padding: 0.5rem 1rem 0.5rem 2.5rem;
+.search-input,
+.price-select {
   border: 1px solid #d1d5db;
   border-radius: 0.25rem;
   outline: none;
@@ -212,121 +283,167 @@ body {
   transition: border-color 0.2s;
 }
 
-.search-input:focus, 
-.price-select:focus {
-  border-color: var(--blue-600);
+.search-input {
+  width: 100%;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
 }
 
 .price-select {
   padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.25rem;
-  outline: none;
-  font-size: 0.875rem;
   background-color: var(--bg-white);
-  transition: border-color 0.2s;
 }
 
-/* Lưới khóa học (Course Grid) */
+.search-input:focus,
+.price-select:focus {
+  border-color: var(--blue-600);
+}
+
+/* Lưới khóa học */
 .course-grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 1.5rem;
 }
 
-
-
-/* Thẻ khóa học (Course Card) */
+/* Thẻ khóa học */
 .course-card {
-  background-color: var(--bg-white);
-  border: 1px solid var(--border-gray-200);
-  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
   overflow: hidden;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
+  cursor: default;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   display: flex;
   flex-direction: column;
 }
 
 .course-card:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border-color: #cbd5e1;
+  transform: translateY(-5px);
+  border-color: #bfdbfe;
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.12);
 }
 
 .course-thumbnail-wrapper {
   position: relative;
   aspect-ratio: 16 / 9;
-  background-color: var(--border-gray-100);
+  overflow: hidden;
+  background: #f1f5f9;
 }
 
 .course-thumbnail {
   width: 100%;
   height: 100%;
+  display: block;
   object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.course-card:hover .course-thumbnail {
+  transform: scale(1.04);
 }
 
 .course-badge {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
+  top: 0.75rem;
+  right: 0.75rem;
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  background: rgba(37, 99, 235, 0.94);
+  backdrop-filter: blur(4px);
   font-size: 0.75rem;
-  font-weight: 500;
-  background-color: var(--blue-600);
+  font-weight: 700;
   color: white;
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .course-badge.free {
-  background-color: var(--green-500);
+  background: rgba(22, 163, 74, 0.94);
 }
 
 .course-info {
-  padding: 0.875rem;
+  padding: 1.15rem;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
 .course-title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-gray-900);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.45rem;
+  color: #0f172a;
+  font-size: 1.05rem;
+  font-weight: 750;
+  line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 2.5rem;
 }
 
 .course-desc {
-  font-size: 0.75rem;
-  color: var(--text-gray-500);
-  margin-bottom: 0.75rem;
+  height: 2.5rem;
+  margin-bottom: 1rem;
+  color: #64748b;
+  font-size: 0.82rem;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 2.25rem;
 }
 
 .course-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   margin-top: auto;
-  padding-top: 0.75rem;
+  padding-top: 0.9rem;
   border-top: 1px solid var(--border-gray-100);
 }
 
-.course-price {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--blue-600);
+.course-footer-single {
+  justify-content: flex-end;
 }
 
-/* Các trạng thái Loading & Empty */
+.course-price {
+  color: #16a34a;
+  font-size: 0.9rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.btn-course-detail {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.45rem;
+  padding: 0.55rem 0.9rem;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-course-detail:hover {
+  background: #1d4ed8;
+  transform: translateX(2px);
+}
+
+.btn-course-detail:focus-visible {
+  outline: 3px solid #bfdbfe;
+  outline-offset: 2px;
+}
+
+/* Trạng thái Loading & Empty */
 .loading-state {
   text-align: center;
   padding: 5rem 0;
@@ -342,7 +459,7 @@ body {
   animation: spin 1s linear infinite;
 }
 
-.spinner-bg { opacity: 0.25; }
+.spinner-bg  { opacity: 0.25; }
 .spinner-lever { opacity: 0.75; }
 
 .loading-text {
@@ -387,8 +504,6 @@ body {
   gap: 2rem;
 }
 
-
-
 .course-main-info {
   flex: 1;
 }
@@ -396,8 +511,6 @@ body {
 .course-sidebar {
   width: 100%;
 }
-
-
 
 .detail-title {
   font-size: 1.875rem;
@@ -442,6 +555,91 @@ body {
   border: 1px solid var(--border-gray-200);
   border-radius: 4px;
   font-size: 0.875rem;
+  /* Nút */
+  width: 100%;
+  appearance: none;
+  font-family: inherit;
+  color: var(--text-gray-800);
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.lesson-preview-item:hover {
+  transform: translateX(5px);
+  border-color: #93c5fd;
+  background-color: #eff6ff;
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.08);
+}
+
+.lesson-preview-item:active {
+  transform: translateX(5px) scale(0.99);
+}
+
+.lesson-preview-item:focus-visible {
+  border-color: var(--blue-600);
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+
+.lesson-preview-item.selected {
+  transform: translateX(5px);
+  border-color: var(--blue-600);
+  background-color: var(--blue-100);
+  box-shadow: 0 7px 18px rgba(37, 99, 235, 0.14);
+}
+
+.lesson-preview-item.selected .lesson-preview-number {
+  background-color: var(--blue-600);
+  color: #ffffff;
+}
+
+.lesson-preview-item.selected .lesson-preview-status {
+  background-color: var(--blue-600);
+  color: #ffffff;
+}
+
+.lesson-preview-main {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.lesson-preview-number {
+  width: 1.8rem;
+  height: 1.8rem;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.lesson-preview-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lesson-preview-status {
+  flex-shrink: 0;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background-color: #f1f5f9;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 /* Khối đăng ký/mua khóa học */
@@ -518,7 +716,6 @@ body {
 
 /* 5. CHECKOUT PAGE */
 
-/* Bố cục trang thanh toán */
 .checkout-layout {
   display: grid;
   grid-template-columns: 1fr;
@@ -526,8 +723,6 @@ body {
   max-width: 60rem;
   margin: 0 auto;
 }
-
-
 
 .checkout-card {
   background-color: var(--bg-white);
@@ -545,7 +740,6 @@ body {
   border-bottom: 1px solid var(--border-gray-100);
 }
 
-/* Mô tả sản phẩm đơn hàng */
 .order-item-detail {
   display: flex;
   gap: 1rem;
@@ -570,8 +764,6 @@ body {
   color: var(--text-gray-500);
 }
 
-
-
 /* Chi tiết tính giá */
 .price-breakdown {
   display: flex;
@@ -586,17 +778,11 @@ body {
   color: var(--text-gray-600);
 }
 
-
 .price-row.border-top {
   border-top: 1px solid var(--border-gray-100);
   padding-top: 0.75rem;
   color: var(--text-gray-900);
 }
-
-.text-blue {
-  color: var(--blue-600);
-}
-
 
 /* Phần thanh toán QR & chuyển khoản */
 .payment-subtitle {
@@ -613,8 +799,6 @@ body {
   text-align: center;
   margin-bottom: 1.5rem;
 }
-
-
 
 .qr-mockup-wrapper {
   width: 9rem;
@@ -680,7 +864,6 @@ body {
 
 /* 6. LEARNING WORKSPACE PAGE */
 
-/* Thân trang không gian học (khóa cuộn tổng) */
 .workspace-body {
   height: 100vh;
   display: flex;
@@ -697,11 +880,6 @@ body {
   height: 3.5rem;
 }
 
-.text-muted {
-  color: var(--text-gray-500);
-  font-weight: normal;
-}
-
 .btn-back-home {
   padding: 0.35rem 0.75rem;
   border: 1px solid var(--border-gray-200);
@@ -716,7 +894,6 @@ body {
   background-color: var(--bg-gray-50);
 }
 
-/* Phân chia không gian học */
 .workspace-layout {
   display: flex;
   flex-direction: column;
@@ -724,9 +901,6 @@ body {
   overflow: hidden;
 }
 
-
-
-/* Vùng phát video chính */
 .workspace-main-content {
   flex-grow: 1;
   background-color: #000000;
@@ -734,8 +908,6 @@ body {
   flex-direction: column;
   overflow-y: auto;
 }
-
-
 
 .video-container {
   width: 100%;
@@ -783,8 +955,6 @@ body {
   flex-shrink: 0;
 }
 
-
-
 .sidebar-header {
   padding: 1rem;
   border-bottom: 1px solid var(--border-gray-100);
@@ -817,7 +987,6 @@ body {
   gap: 0.25rem;
 }
 
-/* Các nút bấm bài giảng trong sidebar */
 .workspace-lesson-item {
   width: 100%;
   border: none;
@@ -842,6 +1011,15 @@ body {
   background-color: var(--blue-100);
   color: var(--blue-700);
   font-weight: 600;
+}
+
+.lesson-list-message {
+  padding: 1rem;
+  color: var(--text-gray-500);
+}
+
+.lesson-list-message.error {
+  color: #dc2626;
 }
 
 
@@ -990,286 +1168,8 @@ body {
   text-decoration: underline;
 }
 
-/* 8. AUTH STATUS NAVIGATION & LAYOUT STYLES */
-.user-nav-actions {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
 
-.button-login {
-  font-size: 0.875rem;
-  padding: 0.35rem 0.75rem;
-}
-
-.button-register {
-  font-size: 0.875rem;
-  padding: 0.35rem 0.75rem;
-  background-color: var(--blue-600);
-  color: white;
-  border-color: var(--blue-600);
-}
-
-.button-register:hover {
-  background-color: var(--blue-700);
-  color: white;
-}
-
-.btn-logout {
-  margin-left: 0.75rem;
-  font-size: 0.85rem;
-  padding: 0.25rem 0.6rem;
-  cursor: pointer;
-}
-
-/* Learning Workspace specific header layout */
-.workspace-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.workspace-user-navigation {
-  padding-left: 0;
-  border-left: none;
-}
-
-.workspace-user-profile {
-  padding-left: 0;
-  border-left: none;
-}
-
-/* =========================================================
-   [THÊM MỚI] GIAO DIỆN THẺ KHÓA HỌC ĐƠN GIẢN, HIỆN ĐẠI
-   ========================================================= */
-
-.course-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  background: #ffffff;
-  overflow: hidden;
-  cursor: default;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-
-.course-card:hover {
-  transform: translateY(-5px);
-  border-color: #bfdbfe;
-  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.12);
-}
-
-.course-thumbnail-wrapper {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background: #f1f5f9;
-}
-
-.course-thumbnail {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  transition: transform 0.35s ease;
-}
-
-.course-card:hover .course-thumbnail {
-  transform: scale(1.04);
-}
-
-.course-badge {
-  top: 0.75rem;
-  right: 0.75rem;
-  border-radius: 999px;
-  padding: 0.35rem 0.7rem;
-  background: rgba(37, 99, 235, 0.94);
-  backdrop-filter: blur(4px);
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.course-badge.free {
-  background: rgba(22, 163, 74, 0.94);
-}
-
-.course-info {
-  padding: 1.15rem;
-}
-
-.course-title {
-  height: auto;
-  margin-bottom: 0.45rem;
-  color: #0f172a;
-  font-size: 1.05rem;
-  font-weight: 750;
-  line-height: 1.4;
-}
-
-.course-desc {
-  height: 2.5rem;
-  margin-bottom: 1rem;
-  color: #64748b;
-  font-size: 0.82rem;
-  line-height: 1.5;
-}
-
-.course-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding-top: 0.9rem;
-}
-
-.course-price {
-  color: #16a34a;
-  font-size: 0.9rem;
-  font-weight: 750;
-  white-space: nowrap;
-}
-
-.btn-course-detail {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  min-height: 2.45rem;
-  padding: 0.55rem 0.9rem;
-  border: none;
-  border-radius: 9px;
-  background: #2563eb;
-  color: #ffffff;
-  font-family: inherit;
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.btn-course-detail:hover {
-  background: #1d4ed8;
-  transform: translateX(2px);
-}
-
-.btn-course-detail:focus-visible {
-  outline: 3px solid #bfdbfe;
-  outline-offset: 2px;
-}
-
-
-
-
-/* =========================================================
-   [THÊM MỚI] NÚT XEM CHI TIẾT CĂN PHẢI SAU KHI XÓA GIÁ DƯỚI
-   ========================================================= */
-
-.course-footer-single {
-  justify-content: flex-end;
-}
-
-/* =========================================================
-   [THÊM MỚI] HIỆU ỨNG CHỌN BÀI TRONG PHẦN ĐỀ CƯƠNG
-   ========================================================= */
-
-.lesson-preview-item {
-  width: 100%;
-  appearance: none;
-  font-family: inherit;
-  color: var(--text-gray-800);
-  text-align: left;
-  cursor: pointer;
-  outline: none;
-  transition:
-    transform 0.18s ease,
-    border-color 0.18s ease,
-    background-color 0.18s ease,
-    box-shadow 0.18s ease;
-}
-
-.lesson-preview-item:hover {
-  transform: translateX(5px);
-  border-color: #93c5fd;
-  background-color: #eff6ff;
-  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.08);
-}
-
-.lesson-preview-item:active {
-  transform: translateX(5px) scale(0.99);
-}
-
-.lesson-preview-item:focus-visible {
-  border-color: var(--blue-600);
-  box-shadow: 0 0 0 3px #dbeafe;
-}
-
-.lesson-preview-main {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.lesson-preview-number {
-  width: 1.8rem;
-  height: 1.8rem;
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background-color: #e2e8f0;
-  color: #475569;
-  font-size: 0.75rem;
-  font-weight: 700;
-  transition: background-color 0.18s ease, color 0.18s ease;
-}
-
-.lesson-preview-title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.lesson-preview-status {
-  flex-shrink: 0;
-  padding: 0.25rem 0.55rem;
-  border-radius: 999px;
-  background-color: #f1f5f9;
-  color: #64748b;
-  font-size: 0.72rem;
-  font-weight: 700;
-  transition: background-color 0.18s ease, color 0.18s ease;
-}
-
-.lesson-preview-item.selected {
-  transform: translateX(5px);
-  border-color: var(--blue-600);
-  background-color: var(--blue-100);
-  box-shadow: 0 7px 18px rgba(37, 99, 235, 0.14);
-}
-
-.lesson-preview-item.selected .lesson-preview-number {
-  background-color: var(--blue-600);
-  color: #ffffff;
-}
-
-.lesson-preview-item.selected .lesson-preview-status {
-  background-color: var(--blue-600);
-  color: #ffffff;
-}
-
-
-.lesson-list-message {
-  padding: 1rem;
-  color: var(--text-gray-500);
-}
-
-.lesson-list-message.error {
-  color: #dc2626;
-}
-
-/* 7. ADMIN DASHBOARD */
+/* 8. ADMIN DASHBOARD */
 
 .admin-container {
   max-width: 1200px;
@@ -1279,17 +1179,22 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
+
 .admin-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
+
 .admin-header h2 {
   font-size: 24px;
   color: var(--text-gray-900);
 }
-.btn-add {
+
+/* Các nút admin dùng chung nền xanh + bo tròn */
+.btn-add,
+.btn-submit {
   background-color: var(--blue-600);
   color: white;
   padding: 10px 20px;
@@ -1298,27 +1203,44 @@ body {
   cursor: pointer;
   font-weight: 600;
 }
-.btn-add:hover {
+
+.btn-add:hover,
+.btn-submit:hover {
   background-color: var(--blue-700);
 }
+
+.btn-cancel {
+  background-color: var(--border-gray-200);
+  color: var(--text-gray-900);
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
 .admin-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
-.admin-table th, .admin-table td {
+
+.admin-table th,
+.admin-table td {
   padding: 15px;
   text-align: left;
   border-bottom: 1px solid var(--border-gray-200);
 }
+
 .admin-table th {
   background-color: var(--bg-gray-50);
   color: var(--text-gray-900);
   font-weight: 600;
 }
+
 .admin-table td {
   color: var(--text-gray-500);
 }
+
 .action-btn {
   padding: 6px 12px;
   margin-right: 5px;
@@ -1327,11 +1249,12 @@ body {
   cursor: pointer;
   font-size: 14px;
 }
-.btn-edit { background-color: #f59e0b; color: white; }
+
+.btn-edit   { background-color: #f59e0b; color: white; }
 .btn-delete { background-color: #ef4444; color: white; }
 .btn-manage { background-color: #3b82f6; color: white; }
 
-/* Modal Styles */
+/* Modal */
 .modal {
   display: none;
   position: fixed;
@@ -1341,9 +1264,11 @@ body {
   justify-content: center;
   align-items: center;
 }
+
 .modal.active {
   display: flex;
 }
+
 .modal-content {
   background-color: var(--bg-white);
   padding: 30px;
@@ -1353,16 +1278,19 @@ body {
   max-height: 90vh;
   overflow-y: auto;
 }
+
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
+
 .modal-header h3 {
   margin: 0;
   font-size: 20px;
 }
+
 .close-btn {
   background: none;
   border: none;
@@ -1370,15 +1298,19 @@ body {
   cursor: pointer;
   color: var(--text-gray-500);
 }
+
 .form-group {
   margin-bottom: 15px;
 }
+
 .form-group label {
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
 }
-.form-group input, .form-group textarea {
+
+.form-group input,
+.form-group textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid var(--border-gray-200);
@@ -1386,33 +1318,19 @@ body {
   background-color: var(--bg-gray-50);
   color: var(--text-gray-900);
 }
+
 .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   margin-top: 20px;
 }
-.btn-cancel {
-  background-color: var(--border-gray-200);
-  color: var(--text-gray-900);
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-}
-.btn-submit {
-  background-color: var(--blue-600);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-}
 
 .lesson-list {
   list-style: none;
   padding: 0;
 }
+
 .lesson-item {
   display: flex;
   justify-content: space-between;
@@ -1422,62 +1340,34 @@ body {
   border-radius: 6px;
   margin-bottom: 10px;
 }
+
 .lesson-item-title {
   flex: 1;
   margin-right: 10px;
 }
-/* RESPONSIVE DESIGN */
+
+
+/* 9. RESPONSIVE DESIGN */
+
 @media (min-width: 1024px) {
-  .user-info-text {
-      display: block;
-    }
-    .filter-bar {
-      flex-direction: row;
-    }
-    .course-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } 
-    .detail-layout {
-      flex-direction: row;
-    }
-    .course-sidebar {
-      width: 22rem;
-      position: sticky;
-      top: 6rem;
-      height: fit-content;
-    }
-    .checkout-layout {
-      grid-template-columns: 1fr 1fr;
-    }
-    .qr-payment-container {
-      flex-direction: row;
-      text-align: left;
-    }
-    .workspace-layout {
-      flex-direction: row;
-    }
-    .workspace-main-content {
-      background-color: var(--bg-gray-50);
-    }
-    .workspace-sidebar {
-      width: 22rem;
-      height: 100%;
-      border-top: none;
-      border-left: 1px solid var(--border-gray-200);
-    }
+  .user-info-text    { display: block; }
+  .filter-bar        { flex-direction: row; }
+  .course-grid       { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .detail-layout     { flex-direction: row; }
+  .course-sidebar    { width: 22rem; position: sticky; top: 6rem; height: fit-content; }
+  .checkout-layout   { grid-template-columns: 1fr 1fr; }
+  .qr-payment-container { flex-direction: row; text-align: left; }
+  .workspace-layout  { flex-direction: row; }
+  .workspace-main-content { background-color: var(--bg-gray-50); }
+  .workspace-sidebar { width: 22rem; height: 100%; border-top: none; border-left: 1px solid var(--border-gray-200); }
 }
-@media (max-width: 420px) {
-  .course-footer {
-      align-items: stretch;
-      flex-direction: column;
-  }
-  .btn-course-detail {
-    width: 100%;
-  }
-}
+
 @media (max-width: 520px) {
-  .lesson-preview-title {
-    white-space: normal;
-  }
-.lesson-preview-item {
-  align-items: flex-start;
-  }
+  .lesson-preview-title { white-space: normal; }
+  .lesson-preview-item  { align-items: flex-start; }
+}
+
+@media (max-width: 420px) {
+  .course-footer    { align-items: stretch; flex-direction: column; }
+  .btn-course-detail { width: 100%; }
 }
