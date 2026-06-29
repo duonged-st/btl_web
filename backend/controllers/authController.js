@@ -49,9 +49,7 @@ const authController = {
       // Lưu session
       req.session.userId = user.id;
       res.json({
-        message: 'Đăng nhập thành công.',
-        user: { id: user.id, username: user.username, role: user.role }
-      });
+        message: 'Đăng nhập thành công.',user: { id: user.id, username: user.username, role: user.role }});
     } catch (error) {
       console.error('Lỗi đăng nhập:', error);
       res.status(500).json({ message: 'Lỗi máy chủ khi đăng nhập.' });

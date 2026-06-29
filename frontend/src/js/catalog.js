@@ -7,7 +7,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const filterPrice = document.getElementById('filter-price');
     let allCourses = [];
-    // 2. Hàm gọi API và hiển thị dữ liệu
+    // 2. Hàm lọc và hiển thị khóa học theo từ khóa và giá
+    function applyFilters() {
+        const keyword = searchInput ? searchInput.value.trim().toLowerCase() : '';
+        const priceFilter = filterPrice ? filterPrice.value : 'all';
+        let filtered = allCourses;
+        // Lọc theo từ khóa (tên hoặc mô tả)
+        if (keyword) {
+            filtered = filtered.filter(course =>
+                course.title.toLowerCase().includes(keyword) ||
+                (course.description && course.description.toLowerCase().includes(keyword))
+            );
+        }
+        // Lọc theo giá
+        if (priceFilter === 'free') {
+            filtered = filtered.filter(course => course.price === 0);
+        } else if (priceFilter === 'paid') {
+            filtered = filtered.filter(course => course.price > 0);
+        }
+        if (filtered.length > 0) {
+            renderCourses(filtered);
+            courseGrid.style.display = 'grid';
+            emptyState.classList.add('hidden');
+        } else {
+            courseGrid.innerHTML = '';
+            courseGrid.style.display = 'none';
+            emptyState.classList.remove('hidden');
+        }
+    }
+    // 3. Hàm gọi API và hiển thị dữ liệu
     // Gọi API lấy danh sách khóa học và hiển thị lên màn hình.
     async function fetchAndRenderCourses() {
         loadingState.classList.remove('hidden');
@@ -62,6 +90,18 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             courseGrid.appendChild(courseCard);
         });
+    }
+    // 4. Gắn sự kiện search (có debounce 300ms để không gọi liên tục)
+    let debounceTimer;
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(applyFilters, 300);
+        });
+    }
+    // 5. Gắn sự kiện filter giá (tức thì)
+    if (filterPrice) {
+        filterPrice.addEventListener('change', applyFilters);
     }
     fetchAndRenderCourses();
 });

@@ -117,18 +117,12 @@ body {
   display: none;
 }
 
-@media (min-width: 640px) {
-  .user-info-text {
-    display: block;
-  }
-}
 
 .user-name {
   font-weight: 700;
   font-size: 0.875rem;
   color: var(--text-gray-800);
 }
-
 /* Nút bấm (Button) */
 .button {
   padding: 0.35rem 0.75rem;
@@ -146,8 +140,6 @@ body {
   background-color: var(--blue-100);
   color: var(--blue-700);
 }
-
-
 /* 3. COURSE CATALOG PAGE */
 
 .main-content {
@@ -193,11 +185,7 @@ body {
   gap: 0.75rem;
 }
 
-@media (min-width: 768px) {
-  .filter-bar {
-    flex-direction: row;
-  }
-}
+
 
 .search-wrapper {
   flex: 1;
@@ -246,9 +234,7 @@ body {
   gap: 1.5rem;
 }
 
-@media (min-width: 640px) {  .course-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1024px) { .course-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 1280px) { .course-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
 
 /* Thẻ khóa học (Course Card) */
 .course-card {
@@ -401,11 +387,7 @@ body {
   gap: 2rem;
 }
 
-@media (min-width: 1024px) {
-  .detail-layout {
-    flex-direction: row;
-  }
-}
+
 
 .course-main-info {
   flex: 1;
@@ -415,14 +397,7 @@ body {
   width: 100%;
 }
 
-@media (min-width: 1024px) {
-  .course-sidebar {
-    width: 22rem;
-    position: sticky;
-    top: 6rem;
-    height: fit-content;
-  }
-}
+
 
 .detail-title {
   font-size: 1.875rem;
@@ -552,11 +527,7 @@ body {
   margin: 0 auto;
 }
 
-@media (min-width: 768px) {
-  .checkout-layout {
-    grid-template-columns: 1fr 1fr;
-  }
-}
+
 
 .checkout-card {
   background-color: var(--bg-white);
@@ -643,12 +614,7 @@ body {
   margin-bottom: 1.5rem;
 }
 
-@media (min-width: 480px) {
-  .qr-payment-container {
-    flex-direction: row;
-    text-align: left;
-  }
-}
+
 
 .qr-mockup-wrapper {
   width: 9rem;
@@ -758,11 +724,7 @@ body {
   overflow: hidden;
 }
 
-@media (min-width: 1024px) {
-  .workspace-layout {
-    flex-direction: row;
-  }
-}
+
 
 /* Vùng phát video chính */
 .workspace-main-content {
@@ -773,11 +735,7 @@ body {
   overflow-y: auto;
 }
 
-@media (min-width: 1024px) {
-  .workspace-main-content {
-    background-color: var(--bg-gray-50);
-  }
-}
+
 
 .video-container {
   width: 100%;
@@ -825,14 +783,7 @@ body {
   flex-shrink: 0;
 }
 
-@media (min-width: 1024px) {
-  .workspace-sidebar {
-    width: 22rem;
-    height: 100%;
-    border-top: none;
-    border-left: 1px solid var(--border-gray-200);
-  }
-}
+
 
 .sidebar-header {
   padding: 1rem;
@@ -1206,16 +1157,7 @@ body {
   outline-offset: 2px;
 }
 
-@media (max-width: 420px) {
-  .course-footer {
-    align-items: stretch;
-    flex-direction: column;
-  }
 
-  .btn-course-detail {
-    width: 100%;
-  }
-}
 
 
 /* =========================================================
@@ -1317,15 +1259,7 @@ body {
   color: #ffffff;
 }
 
-@media (max-width: 520px) {
-  .lesson-preview-title {
-    white-space: normal;
-  }
 
-  .lesson-preview-item {
-    align-items: flex-start;
-  }
-}
 .lesson-list-message {
   padding: 1rem;
   color: var(--text-gray-500);
@@ -1491,4 +1425,59 @@ body {
 .lesson-item-title {
   flex: 1;
   margin-right: 10px;
+}
+/* RESPONSIVE DESIGN */
+@media (min-width: 1024px) {
+  .user-info-text {
+      display: block;
+    }
+    .filter-bar {
+      flex-direction: row;
+    }
+    .course-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } 
+    .detail-layout {
+      flex-direction: row;
+    }
+    .course-sidebar {
+      width: 22rem;
+      position: sticky;
+      top: 6rem;
+      height: fit-content;
+    }
+    .checkout-layout {
+      grid-template-columns: 1fr 1fr;
+    }
+    .qr-payment-container {
+      flex-direction: row;
+      text-align: left;
+    }
+    .workspace-layout {
+      flex-direction: row;
+    }
+    .workspace-main-content {
+      background-color: var(--bg-gray-50);
+    }
+    .workspace-sidebar {
+      width: 22rem;
+      height: 100%;
+      border-top: none;
+      border-left: 1px solid var(--border-gray-200);
+    }
+}
+@media (max-width: 420px) {
+  .course-footer {
+      align-items: stretch;
+      flex-direction: column;
+  }
+  .btn-course-detail {
+    width: 100%;
+  }
+}
+@media (max-width: 520px) {
+  .lesson-preview-title {
+    white-space: normal;
+  }
+.lesson-preview-item {
+  align-items: flex-start;
+  }
 }

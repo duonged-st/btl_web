@@ -100,6 +100,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         detailDesc.textContent = courseData.description || 'Chưa có mô tả chi tiết cho khóa học này.';   
         if (courseData.thumbnail) {
             detailThumbnail.src = courseData.thumbnail;
+            detailThumbnail.style.display = '';
+        } else {
+            detailThumbnail.style.display = 'none';
         }
         if (courseData.price === 0) {
             detailPrice.textContent = 'Miễn phí';
