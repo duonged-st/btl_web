@@ -9,11 +9,11 @@ const lessonController = {
       if (!Number.isInteger(courseId) || courseId <= 0) {
         return res.status(400).json({ message: 'Mã khóa học không hợp lệ.' });
       }
-      const lessons = await LessonModel.getLessonsByCourseId(courseId);
       const course = await CourseModel.getCourseById(courseId);
       if (!course) {
         return res.status(404).json({ message: 'Không tìm thấy khóa học.' });
       }
+      const lessons = await LessonModel.getLessonsByCourseId(courseId);
       res.json(lessons);
     } catch (error) {
       console.error('Lỗi khi lấy danh sách bài học:', error);

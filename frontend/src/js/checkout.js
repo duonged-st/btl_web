@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('authStatusReady', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     let courseId = urlParams.get('id');
     if (!courseId) {
@@ -10,14 +10,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         return;
     }
-    // Gọi API.getMe() để lấy userId thay vì localStorage
-    let userId = null;
-    try {
-        const userRes = await API.getMe();
-        if (userRes.success && userRes.data) {
-            userId = userRes.data.id;
-        }
-    } catch (e) {}
+    // Dùng window.currentUser đã được set bới auth-status.js (không cần gọi lại API)
+    let userId = window.currentUser ? window.currentUser.id : null;
     if (!userId) {
         window.location.href = 'auth/login.html';
         return;

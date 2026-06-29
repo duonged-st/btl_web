@@ -68,18 +68,6 @@ async function setupDatabase() {
     await pool.execute(createLessonsTable);
     await pool.execute(createEnrollmentsTable);
     await pool.execute(createLessonProgressTable);
-    // Kiểm tra và thêm cột video_url nếu chưa có
-    const [columns] = await pool.execute("SHOW COLUMNS FROM Lessons LIKE 'video_url'");
-    if (columns.length === 0) {
-      await pool.execute("ALTER TABLE Lessons ADD COLUMN video_url VARCHAR(255)");
-      console.log("Đã thêm cột video_url vào bảng Lessons.");
-    }
-    // Kiểm tra và thêm cột role vào bảng Users nếu chưa có
-    const [userCols] = await pool.execute("SHOW COLUMNS FROM Users LIKE 'role'");
-    if (userCols.length === 0) {
-      await pool.execute("ALTER TABLE Users ADD COLUMN role VARCHAR(20) DEFAULT 'user'");
-      console.log("Đã thêm cột role vào bảng Users.");
-    }
     // Seed tài khoản admin mặc định nếu chưa tồn tại
     const adminUsername = process.env.ADMIN_USERNAME || 'admin';
     const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
@@ -95,20 +83,7 @@ async function setupDatabase() {
       );
       console.log(`Đã tạo tài khoản admin mặc định: username="${adminUsername}", password="${adminPassword}"`);
     } else {
-      // Kiểm tra nếu tài khoản tồn tại nhưng role chưa phải admin thì cập nhật
-      const [adminRow] = await pool.execute(
-        "SELECT role FROM Users WHERE username = ?",
-        [adminUsername]
-      );
-      if (adminRow.length > 0 && adminRow[0].role !== 'admin') {
-        await pool.execute(
-          "UPDATE Users SET role = 'admin' WHERE username = ?",
-          [adminUsername]
-        );
-        console.log(`Đã cập nhật role của "${adminUsername}" thành admin.`);
-      } else {
-        console.log(`Tài khoản admin "${adminUsername}" đã tồn tại, bỏ qua seed.`);
-      }
+      console.log(`Tài khoản admin "${adminUsername}" đã tồn tại, bỏ qua seed.`);
     }
     console.log("Khoi tao cac bang thanh cong.");
   } catch (error) {

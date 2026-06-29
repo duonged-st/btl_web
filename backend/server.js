@@ -1,11 +1,18 @@
 const express = require('express');
+const cors = require('cors');
+const session = require('express-session');
+const fs = require('fs');
+const path = require('path');
 const { setupDatabase, pool } = require('./config/db');
+const { requireAuth } = require('./middleware/authMiddleware');
+const courseController = require('./controllers/courseController');
+const enrollController = require('./controllers/enrollController');
+const lessonController = require('./controllers/lessonController');
+const authController = require('./controllers/authController');
+const progressController = require('./controllers/progressController');
 const app = express();
 const port = 3000;
 app.use(express.json());
-const cors = require('cors');
-const session = require('express-session');
-const { requireAuth } = require('./middleware/authMiddleware');
 // Cấu hình CORS động để cho phép gửi cookie từ Frontend
 app.use(cors({
     origin: function (origin, callback) {
@@ -24,11 +31,6 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
-const courseController = require('./controllers/courseController');
-const enrollController = require('./controllers/enrollController');
-const lessonController = require('./controllers/lessonController');
-const authController = require('./controllers/authController');
-const progressController = require('./controllers/progressController');
 app.get('/api/setup-db', async (req, res) => {
   try {
     await setupDatabase();
@@ -59,8 +61,6 @@ app.get('/api/users/:id', requireAuth, authController.getUserProfile);
 // Routes tiến độ học tập
 app.get('/api/progress/:courseId', requireAuth, progressController.getProgress);
 app.post('/api/progress/complete', requireAuth, progressController.markCompleted);
-const fs = require('fs');
-const path = require('path');
 app.get('/api/images', async (req, res) => {
   try {
     const imagesDir = path.join(__dirname, '../frontend/src/images');

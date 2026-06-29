@@ -65,7 +65,7 @@ const authController = {
       res.json({ message: 'Đăng xuất thành công.' });
     });
   },
-  // GET /api/users/:id
+  // GET /api/auth/me
   getMe: async (req, res) => {
     try {
       const userId = req.session.userId;

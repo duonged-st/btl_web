@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('authStatusReady', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     let courseId = urlParams.get('id');
     if (!courseId) {
@@ -10,14 +10,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         return;
     }
-    // Lấy userId thông qua Session Backend
-    let userId = null;
-    try {
-        const userRes = await API.getMe();
-        if (userRes.success && userRes.data) {
-            userId = userRes.data.id;
-        }
-    } catch (e) {}
+    // Dùng window.currentUser đã được set bởi auth-status.js (không cần gọi lại API)
+    let userId = window.currentUser ? window.currentUser.id : null;
     const detailTitle = document.getElementById('detail-title');
     const detailDesc = document.getElementById('detail-desc');
     const detailThumbnail = document.getElementById('detail-thumbnail');

@@ -8,6 +8,7 @@ const UserModel = {
       return result.insertId; 
     } catch (error) {
       console.error('Error creating user:', error);
+      throw error;
     }
   },
   // 2. Hàm tìm người dùng bằng Tên đăng nhập (Dùng khi đăng nhập hoặc kiểm tra tồn tại)
@@ -18,6 +19,7 @@ const UserModel = {
       return rows[0]; 
     } catch (error) {
       console.error('Error finding user by username:', error);
+      throw error;
     }
   },
   // 3. Hàm lấy thông tin người dùng bằng ID (Dùng để hiển thị profile hoặc check quyền mua khóa học)
@@ -28,6 +30,7 @@ const UserModel = {
       return rows[0];
     } catch (error) {
       console.error('Error finding user by ID:', error);
+      throw error;
     }
   }
 };

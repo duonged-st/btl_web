@@ -41,7 +41,6 @@ const API = {
     getLessonDetail: async (lessonId) => await fetchAPI(`/lessons/${lessonId}`, 'GET'),
     // --- CHỨC NĂNG 4: NGƯỜI DÙNG & HỒ SƠ ---
     getUserProfile: async (userId) => await fetchAPI(`/users/${userId}`),
-    getUserEnrolledCourses: async () => await fetchAPI(`/enroll/user`),
     getEnrolledCourses: async () => await fetchAPI(`/enroll/user`),
     // --- CHỨC NĂNG 5: XÁC THỰC (AUTHENTICATION) ---
     getMe: async () => await fetchAPI('/auth/me'),

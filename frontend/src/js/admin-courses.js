@@ -22,17 +22,14 @@ async function loadImagesDropdown() {
     try {
         const select = document.getElementById('course-thumbnail');
         select.innerHTML = '<option value="">-- Không chọn ảnh --</option>';
-        const response = await fetch(`${API_BASE_URL}/images`);
-        if (response.ok) {
-            const result = await response.json();
-            if (result.success && result.data) {
-                result.data.forEach(img => {
-                    const opt = document.createElement('option');
-                    opt.value = `images/${img}`;
-                    opt.textContent = img;
-                    select.appendChild(opt);
-                });
-            }
+        const result = await fetchAPI('/images');
+        if (result.success && result.data) {
+            result.data.forEach(img => {
+                const opt = document.createElement('option');
+                opt.value = `images/${img}`;
+                opt.textContent = img;
+                select.appendChild(opt);
+            });
         }
     } catch (e) {
         console.error('Lỗi tải danh sách ảnh', e);
@@ -41,10 +38,9 @@ async function loadImagesDropdown() {
 // --- QUẢN LÝ KHÓA HỌC ---
 async function fetchCourses() {
     try {
-        const response = await fetch(`${API_BASE_URL}/courses`);
-        if (!response.ok) throw new Error('Không thể tải danh sách khóa học');
-        const courses = await response.json();
-        renderCourseTable(courses);
+        const result = await API.getCourses();
+        if (!result.success) throw new Error(result.error || 'Không thể tải danh sách khóa học');
+        renderCourseTable(result.data);
     } catch (error) {
         console.error('Lỗi fetchCourses:', error);
         alert('Lỗi tải danh sách khóa học.');
@@ -85,8 +81,9 @@ async function openCourseModal(mode, courseId = null) {
     if (mode === 'edit' && courseId) {
         titleEl.textContent = 'Sửa Khóa Học';
         try {
-            const response = await fetch(`${API_BASE_URL}/courses/${courseId}`);
-            const course = await response.json();
+            const result = await API.getCourseDetail(courseId);
+            if (!result.success) throw new Error(result.error);
+            const course = result.data;
             document.getElementById('course-id').value = course.id;
             document.getElementById('course-title').value = course.title;
             document.getElementById('course-description').value = course.description;
@@ -120,21 +117,16 @@ async function handleCourseSubmit(e) {
         thumbnail: document.getElementById('course-thumbnail').value
     };
     const isEdit = !!courseId;
-    const url = isEdit ? `${API_BASE_URL}/courses/${courseId}` : `${API_BASE_URL}/courses`;
+    const endpoint = isEdit ? `/courses/${courseId}` : '/courses';
     const method = isEdit ? 'PUT' : 'POST';
     try {
-        const response = await fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(courseData)
-        });
-        if (response.ok) {
+        const result = await fetchAPI(endpoint, method, courseData);
+        if (result.success) {
             alert(isEdit ? 'Cập nhật thành công!' : 'Thêm khóa học thành công!');
             closeCourseModal();
-            fetchCourses(); 
+            fetchCourses();
         } else {
-            const resData = await response.json();
-            alert(resData.message || 'Có lỗi xảy ra.');
+            alert(result.error || 'Có lỗi xảy ra.');
         }
     } catch (error) {
         console.error('Lỗi submit khóa học:', error);
@@ -144,14 +136,12 @@ async function deleteCourse(courseId) {
     if (!confirm('Bạn có chắc chắn muốn xóa khóa học này? Mọi bài học bên trong cũng sẽ bị xóa (nếu DB đã set cascade).')) return;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/courses/${courseId}`, {
-            method: 'DELETE'
-        });
-        if (response.ok) {
+        const result = await fetchAPI(`/courses/${courseId}`, 'DELETE');
+        if (result.success) {
             alert('Xóa khóa học thành công.');
             fetchCourses();
         } else {
-            alert('Xóa thất bại.');
+            alert(result.error || 'Xóa thất bại.');
         }
     } catch (error) {
         console.error('Lỗi khi xóa:', error);
@@ -174,9 +164,9 @@ async function fetchLessonsForCourse(courseId) {
     const container = document.getElementById('lesson-list-container');
     container.innerHTML = '<li>Đang tải...</li>';   
     try {
-        const response = await fetch(`${API_BASE_URL}/courses/${courseId}/lessons`);
-        if (!response.ok) throw new Error('Failed to fetch');
-        const lessons = await response.json();
+        const result = await API.getLessons(courseId);
+        if (!result.success) throw new Error(result.error || 'Failed to fetch');
+        const lessons = result.data;
         container.innerHTML = '';
         if (lessons.length === 0) {
             container.innerHTML = '<li>Chưa có bài học nào.</li>';
@@ -208,16 +198,12 @@ async function handleLessonSubmit(e) {
         lesson_order: Number(document.getElementById('lesson-order').value)
     };
     try {
-        const response = await fetch(`${API_BASE_URL}/lessons`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(lessonData)
-        });
-        if (response.ok) {
+        const result = await fetchAPI('/lessons', 'POST', lessonData);
+        if (result.success) {
             document.getElementById('lesson-form').reset();
-            fetchLessonsForCourse(courseId); 
+            fetchLessonsForCourse(courseId);
         } else {
-            alert('Thêm bài học thất bại.');
+            alert(result.error || 'Thêm bài học thất bại.');
         }
     } catch (error) {
         console.error('Lỗi khi thêm bài học:', error);
@@ -226,13 +212,11 @@ async function handleLessonSubmit(e) {
 async function deleteLesson(lessonId, courseId) {
     if (!confirm('Bạn có chắc muốn xóa bài học này?')) return;
     try {
-        const response = await fetch(`${API_BASE_URL}/lessons/${lessonId}`, {
-            method: 'DELETE'
-        });
-        if (response.ok) {
-            fetchLessonsForCourse(courseId); 
+        const result = await fetchAPI(`/lessons/${lessonId}`, 'DELETE');
+        if (result.success) {
+            fetchLessonsForCourse(courseId);
         } else {
-            alert('Xóa bài học thất bại.');
+            alert(result.error || 'Xóa bài học thất bại.');
         }
     } catch (error) {
         console.error('Lỗi khi xóa bài học:', error);

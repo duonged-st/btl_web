@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
     }
-    // 2. Cập nhật thanh điều hướng (Navbar Header)
+    // 3. Cập nhật thanh điều hướng (Navbar Header)
     const userNavContainer = document.querySelector('.user-navigation');
     if (userNavContainer) {
         if (user) {
