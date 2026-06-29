@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -78,6 +79,23 @@ async function setupDatabase() {
     if (userCols.length === 0) {
       await pool.execute("ALTER TABLE Users ADD COLUMN role VARCHAR(20) DEFAULT 'user'");
       console.log("Đã thêm cột role vào bảng Users.");
+    }
+    // Seed tài khoản admin mặc định nếu chưa tồn tại
+    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const [existingAdmin] = await pool.execute(
+      "SELECT id FROM Users WHERE username = ?",
+      [adminUsername]
+    );
+    if (existingAdmin.length === 0) {
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
+      await pool.execute(
+        "INSERT INTO Users (username, password, role) VALUES (?, ?, 'admin')",
+        [adminUsername, hashedPassword]
+      );
+      console.log(`Đã tạo tài khoản admin mặc định: username="${adminUsername}", password="${adminPassword}"`);
+    } else {
+      console.log(`Tài khoản admin "${adminUsername}" đã tồn tại, bỏ qua seed.`);
     }
     console.log("Khoi tao cac bang thanh cong.");
   } catch (error) {

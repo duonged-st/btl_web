@@ -30,6 +30,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = loginPath;
         return;
     }
+    // 2. Kiểm tra quyền truy cập các trang Admin (Admin Route Guard)
+    const isAdminPage = window.location.pathname.includes('admin-');
+    if (isAdminPage) {
+        if (!user) {
+            alert('Vui lòng đăng nhập để truy cập trang quản trị.');
+            window.location.href = loginPath;
+            return;
+        }
+        if (user.role !== 'admin') {
+            alert('Bạn không có quyền truy cập trang quản trị.');
+            window.location.href = homePath;
+            return;
+        }
+    }
     // 2. Cập nhật thanh điều hướng (Navbar Header)
     const userNavContainer = document.querySelector('.user-navigation');
     if (userNavContainer) {
