@@ -95,7 +95,20 @@ async function setupDatabase() {
       );
       console.log(`Đã tạo tài khoản admin mặc định: username="${adminUsername}", password="${adminPassword}"`);
     } else {
-      console.log(`Tài khoản admin "${adminUsername}" đã tồn tại, bỏ qua seed.`);
+      // Kiểm tra nếu tài khoản tồn tại nhưng role chưa phải admin thì cập nhật
+      const [adminRow] = await pool.execute(
+        "SELECT role FROM Users WHERE username = ?",
+        [adminUsername]
+      );
+      if (adminRow.length > 0 && adminRow[0].role !== 'admin') {
+        await pool.execute(
+          "UPDATE Users SET role = 'admin' WHERE username = ?",
+          [adminUsername]
+        );
+        console.log(`Đã cập nhật role của "${adminUsername}" thành admin.`);
+      } else {
+        console.log(`Tài khoản admin "${adminUsername}" đã tồn tại, bỏ qua seed.`);
+      }
     }
     console.log("Khoi tao cac bang thanh cong.");
   } catch (error) {
